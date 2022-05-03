@@ -1,0 +1,299 @@
+version: "3.4"
+volumes:
+  lnd: {}
+services:
+  bitcoind:
+    restart: ""
+    image: kylemanna/bitcoind
+    ports: []
+    volumes:
+    - ./bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf
+    command: ""
+    depends_on: []
+    environment: []
+  lnd_black_hole:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_black_hole --alias=black_hole --tlscertpath=/cfg/black_hole/tls.cert
+      --adminmacaroonpath=/cfg/black_hole/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_black_hole_indirect:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_black_hole_indirect --alias=black_hole_indirect
+      --tlscertpath=/cfg/black_hole_indirect/tls.cert --adminmacaroonpath=/cfg/black_hole_indirect/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_destination1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_destination1 --alias=destination1 --tlscertpath=/cfg/destination1/tls.cert
+      --adminmacaroonpath=/cfg/destination1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_destination2:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_destination2 --alias=destination2 --tlscertpath=/cfg/destination2/tls.cert
+      --adminmacaroonpath=/cfg/destination2/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_0 --alias=no_liquidity_0 --tlscertpath=/cfg/no_liquidity_0/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_1 --alias=no_liquidity_1 --tlscertpath=/cfg/no_liquidity_1/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_2:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_2 --alias=no_liquidity_2 --tlscertpath=/cfg/no_liquidity_2/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_2/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_3:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_3 --alias=no_liquidity_3 --tlscertpath=/cfg/no_liquidity_3/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_3/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_4:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_4 --alias=no_liquidity_4 --tlscertpath=/cfg/no_liquidity_4/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_4/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_no_liquidity_5:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_no_liquidity_5 --alias=no_liquidity_5 --tlscertpath=/cfg/no_liquidity_5/tls.cert
+      --adminmacaroonpath=/cfg/no_liquidity_5/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node0_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node0_0 --alias=node0_0 --tlscertpath=/cfg/node0_0/tls.cert
+      --adminmacaroonpath=/cfg/node0_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node0_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node0_1 --alias=node0_1 --tlscertpath=/cfg/node0_1/tls.cert
+      --adminmacaroonpath=/cfg/node0_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node1_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node1_0 --alias=node1_0 --tlscertpath=/cfg/node1_0/tls.cert
+      --adminmacaroonpath=/cfg/node1_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node1_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node1_1 --alias=node1_1 --tlscertpath=/cfg/node1_1/tls.cert
+      --adminmacaroonpath=/cfg/node1_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node2_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node2_0 --alias=node2_0 --tlscertpath=/cfg/node2_0/tls.cert
+      --adminmacaroonpath=/cfg/node2_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node2_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node2_1 --alias=node2_1 --tlscertpath=/cfg/node2_1/tls.cert
+      --adminmacaroonpath=/cfg/node2_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node3_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node3_0 --alias=node3_0 --tlscertpath=/cfg/node3_0/tls.cert
+      --adminmacaroonpath=/cfg/node3_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node3_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node3_1 --alias=node3_1 --tlscertpath=/cfg/node3_1/tls.cert
+      --adminmacaroonpath=/cfg/node3_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node4_0:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node4_0 --alias=node4_0 --tlscertpath=/cfg/node4_0/tls.cert
+      --adminmacaroonpath=/cfg/node4_0/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_node4_1:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_node4_1 --alias=node4_1 --tlscertpath=/cfg/node4_1/tls.cert
+      --adminmacaroonpath=/cfg/node4_1/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  lnd_start:
+    restart: unless-stopped
+    image: lightninglabs/lnd:v0.14.3-beta
+    ports: []
+    volumes:
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=lnd_start --alias=start --tlscertpath=/cfg/start/tls.cert
+      --adminmacaroonpath=/cfg/start/admin.macaroon
+    depends_on:
+    - bitcoind
+    environment: []
+  testrunner:
+    restart: ""
+    ports: []
+    volumes:
+    - lnd:/lnd
+    - ./graph.yml:/graph.yml
+    command: ""
+    depends_on:
+    - bitcoind
+    - lnd_black_hole
+    - lnd_black_hole_indirect
+    - lnd_destination1
+    - lnd_destination2
+    - lnd_no_liquidity_0
+    - lnd_no_liquidity_1
+    - lnd_no_liquidity_2
+    - lnd_no_liquidity_3
+    - lnd_no_liquidity_4
+    - lnd_no_liquidity_5
+    - lnd_node0_0
+    - lnd_node0_1
+    - lnd_node1_0
+    - lnd_node1_1
+    - lnd_node2_0
+    - lnd_node2_1
+    - lnd_node3_0
+    - lnd_node3_1
+    - lnd_node4_0
+    - lnd_node4_1
+    - lnd_start
+    build: .
+    environment:
+    - TARGET=lnd
+

@@ -1,0 +1,278 @@
+# Define a set of policies that are to be used in the channel definitions below.
+policies:
+  normal:
+    cltvDelta: 40
+    baseFee: 100
+    feeRate: 1000
+    htlcMaxSat: 100000
+  expensive:
+    cltvDelta: 40
+    baseFee: 1000
+    feeRate: 10000
+    htlcMaxSat: 100000
+  cheap:
+    cltvDelta: 40
+    baseFee: 0
+    feeRate: 0
+    htlcMaxSat: 100000
+
+# Channels are defined as a map of initiator nodes. Each initiator node is a map
+# itself with its peers. The value of each peer is a list of channels between
+# the initiator node and the peer.
+channels:
+  destination1:
+  destination2:
+
+  start:
+    node0_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+
+    node0_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  node0_0:
+    node1_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node1_1:
+      - capacity: 150000
+        policy: expensive
+        remotePolicy: normal
+    black_hole:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+    black_hole_indirect:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+  node0_1:
+    node1_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node1_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  node1_0:
+    node2_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node2_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+  node1_1:
+    node2_0:
+      - capacity: 150000
+        policy: expensive
+        remotePolicy: normal
+    node2_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  node2_0:
+    node3_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node3_1:
+      - capacity: 150000
+        policy: expensive
+        remotePolicy: normal
+  node2_1:
+    node3_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node3_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  node3_0:
+    node4_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node4_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+  node3_1:
+    node4_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+        remoteBalance: 140000
+    node4_1:
+      - capacity: 150000
+        policy: expensive
+        remotePolicy: normal
+    destination2:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+
+  node4_0:
+    destination1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+  node4_1:
+    destination1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+
+  black_hole:
+    no_liquidity_0:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    no_liquidity_1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    no_liquidity_2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    no_liquidity_3:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    no_liquidity_4:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    no_liquidity_5:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  black_hole_indirect:
+    no_liquidity_0:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+    no_liquidity_1:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+    no_liquidity_2:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+    no_liquidity_3:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+    no_liquidity_4:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+    no_liquidity_5:
+      - capacity: 150000
+        policy: normal
+        remotePolicy: normal
+
+  no_liquidity_0: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  no_liquidity_1: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  no_liquidity_2: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  no_liquidity_3: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  no_liquidity_4: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
+  no_liquidity_5: 
+    destination1:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+    destination2:
+      - capacity: 150000
+        policy: cheap
+        remotePolicy: normal
+        remoteBalance: 140000
+
