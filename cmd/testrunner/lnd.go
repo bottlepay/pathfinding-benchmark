@@ -75,7 +75,7 @@ func getLndConnection(alias string) (*lndConnection, error) {
 			}, nil
 		}
 
-		logger.Errorw("Lnd connection error: %v", err)
+		logger.Errorw("Lnd connection error", "error", err)
 
 		time.Sleep(time.Second)
 	}
