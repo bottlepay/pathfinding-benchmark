@@ -235,6 +235,10 @@ func run(_ *cli.Context) error {
 		}
 	}
 
+	// Sleep to prevent hitting channel update rate limits?
+	log.Debugw("Sleeping...")
+	time.Sleep(2 * time.Minute)
+
 	// Set policies.
 	for _, task := range policyTasks {
 		if task.chanPoint == nil {
