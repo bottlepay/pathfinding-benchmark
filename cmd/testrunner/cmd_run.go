@@ -282,21 +282,6 @@ func run(_ *cli.Context) error {
 	// }
 	// clients["start"] = newClient
 
-	// Generate test invoices.
-	var invoices []string
-
-	invoice, err := clients["destination1"].AddInvoice(50000 * 1e3)
-	if err != nil {
-		return err
-	}
-	invoices = append(invoices, invoice)
-
-	// invoice, err = clients["destination2"].AddInvoice(50000 * 1e3)
-	// if err != nil {
-	// 	return err
-	// }
-	// invoices = append(invoices, invoice)
-
 	// Wait for propagation
 	log.Infow("Wait for propagation")
 	err = try(func() error {
@@ -319,15 +304,22 @@ func run(_ *cli.Context) error {
 
 	// Start test payments.
 	start := time.Now()
-	for _, invoice := range invoices {
-		startPayment := time.Now()
-		log.Infow("Sending payment", "invoice", invoice)
-		err = clients["start"].SendPayment(invoice, aliasMap)
-		if err != nil {
-			return err
+	for _, test := range graph.Tests {
+		for dest, amt := range test {
+			invoice, err := clients[dest].AddInvoice(int64(amt * 1e3))
+			if err != nil {
+				return err
+			}
+
+			startPayment := time.Now()
+			log.Infow("Sending payment", "invoice", invoice)
+			err = clients["start"].SendPayment(invoice, aliasMap)
+			if err != nil {
+				return err
+			}
+			elapsed := time.Since(startPayment)
+			log.Infow("Time elapsed", "time", elapsed.String())
 		}
-		elapsed := time.Since(startPayment)
-		log.Infow("Time elapsed", "time", elapsed.String())
 	}
 
 	elapsed := time.Since(start)

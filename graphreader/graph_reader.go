@@ -24,6 +24,7 @@ type YamlChannel struct {
 type YamlGraph struct {
 	Policies map[string]PolicyData
 	Channels map[string]YamlNode
+	Tests    []map[string]int
 }
 
 type YamlNode map[string][]YamlChannel
@@ -62,6 +63,22 @@ func Read(file string) (*YamlGraph, error) {
 				if _, ok := policyNames[channel.RemotePolicy]; !ok {
 					return nil, fmt.Errorf("undefined policy %v", channel.RemotePolicy)
 				}
+			}
+		}
+	}
+
+	for _, test := range g.Tests {
+		if len(test) != 1 {
+			return nil, fmt.Errorf("invalid test definition")
+		}
+
+		for dest, amt := range test {
+			if amt == 0 {
+				return nil, fmt.Errorf("test amount zero")
+			}
+
+			if _, ok := nodeNames[dest]; !ok {
+				return nil, fmt.Errorf("undefined node %v in test", dest)
 			}
 		}
 	}
