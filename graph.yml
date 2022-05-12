@@ -19,6 +19,23 @@ policies:
 # Channels are defined as a map of initiator nodes. Each initiator node is a map
 # itself with its peers. The value of each peer is a list of channels between
 # the initiator node and the peer.
+
+# channels:
+#   destination1:
+
+#   start:
+#     node0_0:
+#       - capacity: 150000
+#         policy: normal
+#         remotePolicy: normal
+
+#   node0_0:
+#     destination1:
+#       - capacity: 150000
+#         policy: normal
+#         remotePolicy: normal
+#         remoteBalance: 40000
+
 channels:
   destination1:
   destination2:

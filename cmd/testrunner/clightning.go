@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/bottlepay/lightning-benchmark/graphreader"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/lightningnetwork/lnd/lnrpc"
 	"github.com/niftynei/glightning/glightning"
 )
@@ -17,9 +18,24 @@ type clightningConnection struct {
 	client *glightning.Lightning
 
 	pubKey string
+	alias  string
 }
 
 func getClightningConnection(alias string) (*clightningConnection, error) {
+	client, pubkey, err := getClightningConnect(alias)
+	if err != nil {
+		return nil, err
+	}
+
+	return &clightningConnection{
+		client: client,
+		pubKey: pubkey,
+		alias:  alias,
+	}, nil
+
+}
+
+func getClightningConnect(alias string) (*glightning.Lightning, string, error) {
 	logger := log.With("node", alias)
 
 	rpcHost := fmt.Sprintf("lnd_%v:9835", alias)
@@ -39,15 +55,11 @@ func getClightningConnection(alias string) (*clightningConnection, error) {
 
 			logger.Infow("Connected to c-lightning", "key", info.Id)
 
-			return &clightningConnection{
-				client: client,
-				pubKey: info.Id,
-			}, nil
+			return client, info.Id, nil
 		}
 
 		time.Sleep(time.Second)
 	}
-
 }
 
 func (l *clightningConnection) PubKey() string {
@@ -88,8 +100,20 @@ func (l *clightningConnection) NewAddress() (string, error) {
 func (l *clightningConnection) OpenChannel(peerKey string, amtSat int64, pushAmtSat int64) (*lnrpc.ChannelPoint, error) {
 	sat := glightning.NewSat64(uint64(amtSat))
 	pushMsat := glightning.NewMsat(uint64(pushAmtSat) * 1e3)
-	_, err := l.client.FundChannelExt(peerKey, sat, nil, false, nil, pushMsat)
-	return nil, err
+	resp, err := l.client.FundChannelExt(peerKey, sat, nil, false, nil, pushMsat)
+	if err != nil {
+		return nil, err
+	}
+
+	txID, err := chainhash.NewHashFromStr(resp.FundingTxId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &lnrpc.ChannelPoint{
+		FundingTxid: &lnrpc.ChannelPoint_FundingTxidBytes{FundingTxidBytes: txID[:]},
+		// Index unavailable for cln?
+	}, err
 }
 
 func (l *clightningConnection) ActiveChannels() (int, error) {
@@ -99,20 +123,23 @@ func (l *clightningConnection) ActiveChannels() (int, error) {
 	}
 
 	return infoResp.ActiveChannelCount, nil
-	// channels, err := l.client.ListChannelsBySource("")
-	// if err != nil {
-	// 	return 0, err
-	// }
 
-	// var activeCount int
-	// for _, ch := range channels {
-	// 	if ch.IsActive {
-	// 		activeCount++
-	// 	}
-	// }
+}
 
-	// // Both channel ends are represented in the list.
-	// return activeCount, nil
+func (l *clightningConnection) NetworkEdgeCount() (int, error) {
+	channels, err := l.client.ListChannelsBySource("")
+	if err != nil {
+		return 0, err
+	}
+
+	var activeCount int
+	for _, ch := range channels {
+		if ch.IsActive {
+			activeCount++
+		}
+	}
+
+	return activeCount, nil
 }
 
 func (l *clightningConnection) AddInvoice(amtMsat int64) (string, error) {
@@ -165,4 +192,31 @@ func (l *clightningConnection) SetPolicy(chanPoint *lnrpc.ChannelPoint,
 	policy *graphreader.PolicyData) error {
 
 	return nil
+
+	// fundingTxID, err := chainhash.NewHash(chanPoint.GetFundingTxidBytes())
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = l.client.SetChannelFee(
+	// 	fundingTxID.String(),
+	// 	strconv.FormatInt(int64(policy.BaseFee), 10),
+	// 	uint32(policy.FeeRate),
+	// )
+
+	// return err
+}
+
+func (l *clightningConnection) Restart() (nodeInterface, error) {
+	_, err := l.client.Stop()
+	if err != nil {
+		return nil, err
+	}
+
+	conn, err := getClightningConnection(l.alias)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
 }

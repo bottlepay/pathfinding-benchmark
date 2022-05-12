@@ -87,7 +87,7 @@ func run() error {
 		if alias == "start" && target == "cln" {
 			serv = service{
 				// TODO: Replace with 0.11 image.
-				Image: "elementsproject/lightningd:v0.9.3",
+				Image: "elementsproject/lightningd:v0.11.0.1",
 				// Image:     "cln:latest",
 
 				DependsOn: []string{"bitcoind"},
@@ -102,7 +102,8 @@ func run() error {
 			}
 		} else {
 			serv = service{
-				Image:     "lightninglabs/lnd:v0.14.3-beta",
+				Image: "lightninglabs/lnd:v0.14.3-beta",
+				//Build:     "lnd",
 				DependsOn: []string{"bitcoind"},
 				Volumes: []string{
 					"./lnd.conf:/root/.lnd/lnd.conf",

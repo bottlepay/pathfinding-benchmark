@@ -133,6 +133,7 @@ func run(_ *cli.Context) error {
 
 	log.Infow("Wait for coin and open channels")
 	expectedChannelCount := make(map[string]int)
+	totalChannelCount := 0
 
 	type policyTask struct {
 		node      string
@@ -176,6 +177,7 @@ func run(_ *cli.Context) error {
 
 				expectedChannelCount[alias]++
 				expectedChannelCount[peer]++
+				totalChannelCount++
 
 				policy, ok := graph.Policies[channel.Policy]
 				if !ok {
@@ -249,6 +251,37 @@ func run(_ *cli.Context) error {
 		}
 	}
 
+	// Connect all nodes to start for better gossip.
+	// peerClient := clients["start"]
+	// peerKey := peerClient.PubKey()
+	// rpcHost := fmt.Sprintf("lnd_%v:9735", "start")
+
+	// for alias := range graph.Channels {
+	// 	if alias == "start" {
+	// 		continue
+	// 	}
+
+	// 	nodeLog := log.With("node", alias)
+	// 	client := clients[alias]
+
+	// 	nodeLog.Infow("Connecting",
+	// 		"peerPubKey", peerKey, "host", rpcHost)
+
+	// 	err := client.Connect(peerKey, rpcHost)
+	// 	if err != nil {
+	// 		nodeLog.Debugw("Connect error", "error", err)
+	// 	}
+	// }
+
+	// Restart the start node. For some reason cln won't otherwise receive all
+	// edges.
+	// log.Infow("Restarting start node")
+	// newClient, err := clients["start"].Restart()
+	// if err != nil {
+	// 	return err
+	// }
+	// clients["start"] = newClient
+
 	// Generate test invoices.
 	var invoices []string
 
@@ -258,16 +291,33 @@ func run(_ *cli.Context) error {
 	}
 	invoices = append(invoices, invoice)
 
-	invoice, err = clients["destination2"].AddInvoice(50000 * 1e3)
-	if err != nil {
-		return err
-	}
-	invoices = append(invoices, invoice)
+	// invoice, err = clients["destination2"].AddInvoice(50000 * 1e3)
+	// if err != nil {
+	// 	return err
+	// }
+	// invoices = append(invoices, invoice)
 
 	// Wait for propagation
 	log.Infow("Wait for propagation")
-	time.Sleep(10 * time.Second)
+	err = try(func() error {
+		edgeCount, err := clients["start"].NetworkEdgeCount()
+		if err != nil {
+			return err
+		}
 
+		if edgeCount != totalChannelCount*2 {
+			log.Debugw("Gossiped edges", "count", edgeCount, "expected", totalChannelCount*2)
+
+			return errors.New("still waiting for edges")
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	// Start test payments.
 	start := time.Now()
 	for _, invoice := range invoices {
 		startPayment := time.Now()

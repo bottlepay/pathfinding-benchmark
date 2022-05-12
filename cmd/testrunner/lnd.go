@@ -16,6 +16,7 @@ type lndConnection struct {
 	routerClient    routerrpc.RouterClient
 	lightningClient lnrpc.LightningClient
 	pubKey          route.Vertex
+	alias           string
 }
 
 func tryFunc(f func() error, maxAttempts int) error {
@@ -72,6 +73,7 @@ func getLndConnection(alias string) (*lndConnection, error) {
 				conn:            conn,
 				routerClient:    routerrpc.NewRouterClient(conn),
 				lightningClient: lnrpc.NewLightningClient(conn),
+				alias:           alias,
 			}, nil
 		}
 
@@ -171,6 +173,27 @@ func (l *lndConnection) ActiveChannels() (int, error) {
 	return len(resp.Channels), nil
 }
 
+func (l *lndConnection) NetworkEdgeCount() (int, error) {
+	resp, err := l.lightningClient.DescribeGraph(context.Background(), &lnrpc.ChannelGraphRequest{})
+	if err != nil {
+		return 0, err
+	}
+
+	edges := 0
+	for _, edge := range resp.Edges {
+		// 999 is the default fee. If that's the policy, it means that the
+		// latest channel update hasn't been received yet.
+		if edge.Node1Policy != nil && edge.Node1Policy.FeeBaseMsat != 999 {
+			edges++
+		}
+		if edge.Node2Policy != nil && edge.Node2Policy.FeeBaseMsat != 999 {
+			edges++
+		}
+	}
+
+	return edges, nil
+}
+
 func (l *lndConnection) AddInvoice(amtMsat int64) (string, error) {
 	addResp, err := l.lightningClient.AddInvoice(context.Background(), &lnrpc.Invoice{
 		ValueMsat: amtMsat,
@@ -231,4 +254,17 @@ func (l *lndConnection) HasFunds() error {
 
 		time.Sleep(time.Second)
 	}
+}
+
+func (l *lndConnection) Restart() (nodeInterface, error) {
+	_, err := l.lightningClient.StopDaemon(context.Background(), &lnrpc.StopRequest{})
+	if err != nil {
+		return nil, err
+	}
+	conn, err := getLndConnection(l.alias)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
 }
