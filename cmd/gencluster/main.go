@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -59,11 +60,12 @@ func run() error {
 		"bitcoind",
 	}
 
-	nodesSet := make(map[string]struct{})
-	for node, peers := range graph.Channels {
-		nodesSet[node] = struct{}{}
-		for peer := range peers {
-			nodesSet[peer] = struct{}{}
+	nodesSet := make(map[string]graphreader.PolicyData)
+	for alias, peers := range graph.Nodes {
+		var ok bool
+		nodesSet[alias], ok = graph.Policies[peers.Policy]
+		if !ok {
+			return errors.New("unknown policy")
 		}
 	}
 
@@ -81,6 +83,8 @@ func run() error {
 	for _, alias := range nodes {
 		name := "lnd_" + alias
 		depends = append(depends, name)
+
+		policy := nodesSet[alias]
 
 		var serv service
 
@@ -109,8 +113,8 @@ func run() error {
 					"./lnd.conf:/root/.lnd/lnd.conf",
 					"lnd:/cfg",
 				},
-				Command: fmt.Sprintf("--tlsextradomain=%v --alias=%v --tlscertpath=/cfg/%v/tls.cert --adminmacaroonpath=/cfg/%v/admin.macaroon",
-					name, alias, alias, alias),
+				Command: fmt.Sprintf("--tlsextradomain=%v --alias=%v --tlscertpath=/cfg/%v/tls.cert --adminmacaroonpath=/cfg/%v/admin.macaroon --bitcoin.basefee=%v --bitcoin.feerate=%v",
+					name, alias, alias, alias, policy.BaseFee, policy.FeeRate),
 			}
 		}
 

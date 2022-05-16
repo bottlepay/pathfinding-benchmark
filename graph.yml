@@ -1,9 +1,9 @@
 # Define test payments in the format <destination node>: <amount>
 tests:
-  - destination1: 50000
-  - destination2: 50000
-  - destination1: 50000
-  - destination2: 50000
+  - destination1: 25000
+  - destination2: 25000
+  - destination1: 25000
+  - destination2: 25000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -34,269 +34,219 @@ policies:
 #     node0_0:
 #       - capacity: 150000
 #         policy: normal
-#         remotePolicy: normal
+#   
 
 #   node0_0:
 #     destination1:
 #       - capacity: 150000
 #         policy: normal
-#         remotePolicy: normal
+#   
 #         remoteBalance: 40000
 
-channels:
+nodes:
   destination1:
+    policy: normal
+
   destination2:
+    policy: normal
 
   start:
-    node0_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: normal
+    channels:
+      node0_0:
+        - capacity: 150000
 
-    node0_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+      node0_1:
+        - capacity: 150000
+          remoteBalance: 140000
 
   node0_0:
-    node1_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node1_1:
-      - capacity: 150000
-        policy: expensive
-        remotePolicy: normal
-    black_hole:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-    black_hole_indirect:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: normal
+    channels:
+      node1_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node1_1:
+        - capacity: 150000
+      black_hole:
+        - capacity: 150000
+      black_hole_indirect:
+        - capacity: 150000
+  
   node0_1:
-    node1_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node1_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: normal
+    channels:
+      node1_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node1_1:
+        - capacity: 150000
+          remoteBalance: 140000
 
   node1_0:
-    node2_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node2_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: normal
+    channels:
+      node2_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node2_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
   node1_1:
-    node2_0:
-      - capacity: 150000
-        policy: expensive
-        remotePolicy: normal
-    node2_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: expensive
+    channels:
+      node2_0:
+        - capacity: 150000
+      node2_1:
+        - capacity: 150000
+          remoteBalance: 140000
 
   node2_0:
-    node3_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node3_1:
-      - capacity: 150000
-        policy: expensive
-        remotePolicy: normal
+    policy: expensive
+    channels:
+      node3_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node3_1:
+        - capacity: 150000
   node2_1:
-    node3_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node3_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: normal
+    channels:
+      node3_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node3_1:
+        - capacity: 150000
+          remoteBalance: 140000
 
   node3_0:
-    node4_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node4_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: normal
+    channels:
+      node4_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node4_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
   node3_1:
-    node4_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-        remoteBalance: 140000
-    node4_1:
-      - capacity: 150000
-        policy: expensive
-        remotePolicy: normal
-    destination2:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: expensive
+    channels:
+      node4_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node4_1:
+        - capacity: 150000
+      destination2:
+        - capacity: 150000
 
   node4_0:
-    destination1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: normal
+    channels:
+      destination1:
+        - capacity: 150000
   node4_1:
-    destination1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: expensive
+    channels:
+      destination1:
+        - capacity: 150000
 
   black_hole:
-    no_liquidity_0:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    no_liquidity_1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    no_liquidity_2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    no_liquidity_3:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    no_liquidity_4:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    no_liquidity_5:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      no_liquidity_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_1:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_2:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_3:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_4:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_5:
+        - capacity: 150000
+          remoteBalance: 140000
 
   black_hole_indirect:
-    no_liquidity_0:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-    no_liquidity_1:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-    no_liquidity_2:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-    no_liquidity_3:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-    no_liquidity_4:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
-    no_liquidity_5:
-      - capacity: 150000
-        policy: normal
-        remotePolicy: normal
+    policy: cheap
+    channels:
+      no_liquidity_0:
+        - capacity: 150000
+      no_liquidity_1:
+        - capacity: 150000
+      no_liquidity_2:
+        - capacity: 150000
+      no_liquidity_3:
+        - capacity: 150000
+      no_liquidity_4:
+        - capacity: 150000
+      no_liquidity_5:
+        - capacity: 150000
 
   no_liquidity_0: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 
   no_liquidity_1: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 
   no_liquidity_2: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 
   no_liquidity_3: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 
   no_liquidity_4: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 
   no_liquidity_5: 
-    destination1:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
-    destination2:
-      - capacity: 150000
-        policy: cheap
-        remotePolicy: normal
-        remoteBalance: 140000
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
 

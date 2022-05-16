@@ -88,7 +88,7 @@ func run(_ *cli.Context) error {
 
 	clients := make(map[string]nodeInterface)
 	aliasMap := make(map[string]string)
-	for node := range graph.Channels {
+	for node := range graph.Nodes {
 		var client nodeInterface
 		var err error
 
@@ -141,9 +141,7 @@ func run(_ *cli.Context) error {
 		policy    *graphreader.PolicyData
 	}
 
-	var policyTasks []*policyTask
-
-	for alias, peers := range graph.Channels {
+	for alias, peers := range graph.Nodes {
 		nodeLog := log.With("node", alias)
 		client := clients[alias]
 
@@ -151,7 +149,7 @@ func run(_ *cli.Context) error {
 			return err
 		}
 
-		for peer, channels := range peers {
+		for peer, channels := range peers.Channels {
 			peerClient := clients[peer]
 			peerKey := peerClient.PubKey()
 			rpcHost := fmt.Sprintf("lnd_%v:9735", peer)
@@ -167,7 +165,7 @@ func run(_ *cli.Context) error {
 			nodeLog.Infow("Open channel", "peer", peer)
 
 			for _, channel := range channels {
-				chanPoint, err := client.OpenChannel(
+				_, err := client.OpenChannel(
 					peerKey, int64(channel.Capacity),
 					int64(channel.RemoteBalance),
 				)
@@ -178,29 +176,6 @@ func run(_ *cli.Context) error {
 				expectedChannelCount[alias]++
 				expectedChannelCount[peer]++
 				totalChannelCount++
-
-				policy, ok := graph.Policies[channel.Policy]
-				if !ok {
-					return fmt.Errorf("policy %v not found", channel.Policy)
-				}
-
-				remotePolicy, ok := graph.Policies[channel.RemotePolicy]
-				if !ok {
-					return fmt.Errorf("policy %v not found", channel.RemotePolicy)
-				}
-
-				policyTasks = append(policyTasks,
-					&policyTask{
-						node:      alias,
-						chanPoint: chanPoint,
-						policy:    &policy,
-					},
-					&policyTask{
-						node:      peer,
-						chanPoint: chanPoint,
-						policy:    &remotePolicy,
-					},
-				)
 			}
 		}
 	}
@@ -229,26 +204,6 @@ func run(_ *cli.Context) error {
 			}
 
 			return nil
-		})
-		if err != nil {
-			return err
-		}
-	}
-
-	// Sleep to prevent hitting channel update rate limits?
-	log.Debugw("Sleeping...")
-	time.Sleep(2 * time.Minute)
-
-	// Set policies.
-	for _, task := range policyTasks {
-		if task.chanPoint == nil {
-			log.Debugw("Skipping policy setting", "node", task.node)
-
-			continue
-		}
-		log.Debugw("Setting policy", "node", task.node, "channel", task.chanPoint, "policy", task.policy)
-		err := try(func() error {
-			return clients[task.node].SetPolicy(task.chanPoint, task.policy)
 		})
 		if err != nil {
 			return err

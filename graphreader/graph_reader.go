@@ -16,18 +16,19 @@ type PolicyData struct {
 
 type YamlChannel struct {
 	Capacity      int
-	Policy        string
-	RemoteBalance int    `yaml:"remoteBalance"`
-	RemotePolicy  string `yaml:"remotePolicy"`
+	RemoteBalance int `yaml:"remoteBalance"`
 }
 
 type YamlGraph struct {
 	Policies map[string]PolicyData
-	Channels map[string]YamlNode
+	Nodes    map[string]YamlNode
 	Tests    []map[string]int
 }
 
-type YamlNode map[string][]YamlChannel
+type YamlNode struct {
+	Policy   string
+	Channels map[string][]YamlChannel
+}
 
 func Read(file string) (*YamlGraph, error) {
 	yamlFile, err := ioutil.ReadFile(file)
@@ -47,22 +48,18 @@ func Read(file string) (*YamlGraph, error) {
 	}
 
 	nodeNames := make(map[string]struct{})
-	for alias := range g.Channels {
+	for alias := range g.Nodes {
 		nodeNames[alias] = struct{}{}
 	}
 
-	for _, node := range g.Channels {
-		for peerName, peer := range node {
+	for _, node := range g.Nodes {
+		if _, ok := policyNames[node.Policy]; !ok {
+			return nil, fmt.Errorf("undefined policy %v", node.Policy)
+		}
+
+		for peerName := range node.Channels {
 			if _, ok := nodeNames[peerName]; !ok {
 				return nil, fmt.Errorf("undefined node %v", peerName)
-			}
-			for _, channel := range peer {
-				if _, ok := policyNames[channel.Policy]; !ok {
-					return nil, fmt.Errorf("undefined policy %v", channel.Policy)
-				}
-				if _, ok := policyNames[channel.RemotePolicy]; !ok {
-					return nil, fmt.Errorf("undefined policy %v", channel.RemotePolicy)
-				}
 			}
 		}
 	}
