@@ -106,8 +106,8 @@ func run() error {
 			}
 		} else {
 			serv = service{
-				Image: "lightninglabs/lnd:v0.14.3-beta",
-				//Build:     "lnd",
+				//Image: "lightninglabs/lnd:v0.14.3-beta",
+				Build:     "lnd",
 				DependsOn: []string{"bitcoind"},
 				Volumes: []string{
 					"./lnd.conf:/root/.lnd/lnd.conf",

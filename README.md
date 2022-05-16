@@ -21,7 +21,21 @@ Relevant files:
 * [run.sh cln | lnd](run.sh) fires it all up. The argument controls the
   implementation that is used for the `start` node.
 
-  If all goes well, output should be similar to:
+# Issues
+
+* There seems to be an issue with propagating all relevant gossip to the `start`
+  node, see https://github.com/lightningnetwork/lnd/issues/6531.
+
+  As a workaround, this test uses a patched lnd that sends gossip more
+  aggressively.
+
+* LND instances are spun up simultaneously. This creates a peak in memory usage.
+  If there isn't enough memory and LND OOM's, it may enter a non-recoverable
+  state: https://github.com/lightningnetwork/lnd/issues/6210#issuecomment-1123736209
+
+## Expected output
+
+If all goes well, output should be similar to:
 
 ```
 testrunner_1                | Starting test.
