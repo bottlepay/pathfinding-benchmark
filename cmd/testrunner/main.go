@@ -36,7 +36,11 @@ func getClientConn(alias string) (*grpc.ClientConn, error) {
 		return nil, fmt.Errorf("unable to decode macaroon: %v", err)
 	}
 
-	cred := macaroons.NewMacaroonCredential(mac)
+	cred, err := macaroons.NewMacaroonCredential(mac)
+	if err != nil {
+		return nil, err
+	}
+
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(creds),
 		grpc.WithPerRPCCredentials(cred),

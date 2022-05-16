@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/bottlepay/lightning-benchmark/graphreader"
@@ -149,7 +150,7 @@ func (l *lndConnection) OpenChannel(peerKey string, amtSat int64, pushAmtSat int
 func (l *lndConnection) SetPolicy(chanPoint *lnrpc.ChannelPoint,
 	policy *graphreader.PolicyData) error {
 
-	_, err := l.lightningClient.UpdateChannelPolicy(context.Background(),
+	resp, err := l.lightningClient.UpdateChannelPolicy(context.Background(),
 		&lnrpc.PolicyUpdateRequest{
 			Scope: &lnrpc.PolicyUpdateRequest_ChanPoint{
 				ChanPoint: chanPoint,
@@ -160,7 +161,14 @@ func (l *lndConnection) SetPolicy(chanPoint *lnrpc.ChannelPoint,
 			MaxHtlcMsat:   uint64(policy.HtlcMaxSat) * 1e3,
 		},
 	)
-	return err
+	if err != nil {
+		return err
+	}
+	if len(resp.FailedUpdates) > 0 {
+		return errors.New("policy update failed")
+	}
+
+	return nil
 }
 
 func (l *lndConnection) ActiveChannels() (int, error) {
