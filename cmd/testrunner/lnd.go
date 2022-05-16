@@ -269,6 +269,9 @@ func (l *lndConnection) Restart() (nodeInterface, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	time.Sleep(3 * time.Second)
+
 	conn, err := getLndConnection(l.alias)
 	if err != nil {
 		return nil, err

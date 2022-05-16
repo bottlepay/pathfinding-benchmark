@@ -210,36 +210,16 @@ func run(_ *cli.Context) error {
 		}
 	}
 
-	// Connect all nodes to start for better gossip.
-	// peerClient := clients["start"]
-	// peerKey := peerClient.PubKey()
-	// rpcHost := fmt.Sprintf("lnd_%v:9735", "start")
-
-	// for alias := range graph.Channels {
-	// 	if alias == "start" {
-	// 		continue
-	// 	}
-
-	// 	nodeLog := log.With("node", alias)
-	// 	client := clients[alias]
-
-	// 	nodeLog.Infow("Connecting",
-	// 		"peerPubKey", peerKey, "host", rpcHost)
-
-	// 	err := client.Connect(peerKey, rpcHost)
-	// 	if err != nil {
-	// 		nodeLog.Debugw("Connect error", "error", err)
-	// 	}
-	// }
-
 	// Restart the start node. For some reason cln won't otherwise receive all
 	// edges.
-	// log.Infow("Restarting start node")
-	// newClient, err := clients["start"].Restart()
-	// if err != nil {
-	// 	return err
-	// }
-	// clients["start"] = newClient
+	if target == "cln" {
+		log.Infow("Restarting start node")
+		newClient, err := clients["start"].Restart()
+		if err != nil {
+			return err
+		}
+		clients["start"] = newClient
+	}
 
 	// Wait for propagation
 	log.Infow("Wait for propagation")

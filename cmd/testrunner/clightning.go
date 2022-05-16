@@ -213,6 +213,8 @@ func (l *clightningConnection) Restart() (nodeInterface, error) {
 		return nil, err
 	}
 
+	time.Sleep(3 * time.Second)
+
 	conn, err := getClightningConnection(l.alias)
 	if err != nil {
 		return nil, err
