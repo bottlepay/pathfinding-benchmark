@@ -10,7 +10,6 @@ import (
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcutil"
-	"github.com/lightningnetwork/lnd/lnrpc"
 	"github.com/urfave/cli"
 )
 
@@ -135,12 +134,6 @@ func run(_ *cli.Context) error {
 	expectedChannelCount := make(map[string]int)
 	totalChannelCount := 0
 
-	type policyTask struct {
-		node      string
-		chanPoint *lnrpc.ChannelPoint
-		policy    *graphreader.PolicyData
-	}
-
 	for alias, peers := range graph.Nodes {
 		nodeLog := log.With("node", alias)
 		client := clients[alias]
@@ -152,7 +145,7 @@ func run(_ *cli.Context) error {
 		for peer, channels := range peers.Channels {
 			peerClient := clients[peer]
 			peerKey := peerClient.PubKey()
-			rpcHost := fmt.Sprintf("lnd_%v:9735", peer)
+			rpcHost := fmt.Sprintf("node_%v:9735", peer)
 
 			nodeLog.Infow("Connecting", "peer", peer,
 				"peerPubKey", peerKey, "host", rpcHost)
@@ -229,9 +222,9 @@ func run(_ *cli.Context) error {
 			return err
 		}
 
-		if edgeCount != totalChannelCount*2 {
-			log.Debugw("Gossiped edges", "count", edgeCount, "expected", totalChannelCount*2)
+		log.Debugw("Gossiped edges", "count", edgeCount, "expected", totalChannelCount*2)
 
+		if edgeCount != totalChannelCount*2 {
 			return errors.New("still waiting for edges")
 		}
 

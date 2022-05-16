@@ -1,7 +1,19 @@
 #!/bin/bash
 
+if [[ $1 == "" ]]
+then
+  echo "usage: run.sh lnd | cln"
+  exit 1
+fi
+
+if [[ $1 != 'cln' && $1 != 'lnd' ]]
+then
+  echo "unknown target"
+  exit 1
+fi
+
 # Select target: 'cln' or 'lnd'
-export TARGET=lnd
+export TARGET=$1
 
 # Generate up to date docker compose file from graph.yml
 go run ./cmd/gencluster/... > docker-compose.yml

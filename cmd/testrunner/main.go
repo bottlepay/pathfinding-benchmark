@@ -17,7 +17,7 @@ func getClientConn(alias string) (*grpc.ClientConn, error) {
 	var (
 		tlsCertPath = fmt.Sprintf("/lnd/%v/tls.cert", alias)
 		macPath     = fmt.Sprintf("/lnd/%v/admin.macaroon", alias)
-		rpcHost     = fmt.Sprintf("lnd_%v:10009", alias)
+		rpcHost     = fmt.Sprintf("node_%v:10009", alias)
 	)
 
 	creds, err := credentials.NewClientTLSFromFile(tlsCertPath, "")

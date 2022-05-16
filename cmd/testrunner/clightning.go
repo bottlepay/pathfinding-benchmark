@@ -38,7 +38,7 @@ func getClightningConnection(alias string) (*clightningConnection, error) {
 func getClightningConnect(alias string) (*glightning.Lightning, string, error) {
 	logger := log.With("node", alias)
 
-	rpcHost := fmt.Sprintf("lnd_%v:9835", alias)
+	rpcHost := fmt.Sprintf("node_%v:9835", alias)
 
 	client := glightning.NewLightning()
 	client.StartUp(rpcHost)

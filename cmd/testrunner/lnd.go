@@ -240,7 +240,9 @@ func (l *lndConnection) SendPayment(invoice string, aliasMap map[string]string) 
 			for _, hop := range route.Hops {
 				hops = append(hops, aliasMap[hop.PubKey])
 			}
-			log.Debugw("Payment update", "htlcIdx", i, "route", hops)
+			log.Debugw("Payment update", "htlcIdx", i,
+				"amt", route.Hops[len(route.Hops)-1].AmtToForwardMsat/1000,
+				"route", hops)
 		}
 		prevHtlcs = htlcCount
 
