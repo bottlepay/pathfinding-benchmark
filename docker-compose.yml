@@ -11,259 +11,259 @@ services:
     command: ""
     depends_on: []
     environment: []
-  node_black_hole:
+  node-black_hole:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_black_hole --alias=black_hole --tlscertpath=/cfg/black_hole/tls.cert
+    command: --tlsextradomain=node-black_hole --alias=black_hole --tlscertpath=/cfg/black_hole/tls.cert
       --adminmacaroonpath=/cfg/black_hole/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_black_hole_indirect:
+  node-black_hole_indirect:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_black_hole_indirect --alias=black_hole_indirect
+    command: --tlsextradomain=node-black_hole_indirect --alias=black_hole_indirect
       --tlscertpath=/cfg/black_hole_indirect/tls.cert --adminmacaroonpath=/cfg/black_hole_indirect/admin.macaroon
       --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_destination1:
+  node-destination1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_destination1 --alias=destination1 --tlscertpath=/cfg/destination1/tls.cert
+    command: --tlsextradomain=node-destination1 --alias=destination1 --tlscertpath=/cfg/destination1/tls.cert
       --adminmacaroonpath=/cfg/destination1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_destination2:
+  node-destination2:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_destination2 --alias=destination2 --tlscertpath=/cfg/destination2/tls.cert
+    command: --tlsextradomain=node-destination2 --alias=destination2 --tlscertpath=/cfg/destination2/tls.cert
       --adminmacaroonpath=/cfg/destination2/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_0:
+  node-no_liquidity_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_0 --alias=no_liquidity_0 --tlscertpath=/cfg/no_liquidity_0/tls.cert
+    command: --tlsextradomain=node-no_liquidity_0 --alias=no_liquidity_0 --tlscertpath=/cfg/no_liquidity_0/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_0/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_1:
+  node-no_liquidity_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_1 --alias=no_liquidity_1 --tlscertpath=/cfg/no_liquidity_1/tls.cert
+    command: --tlsextradomain=node-no_liquidity_1 --alias=no_liquidity_1 --tlscertpath=/cfg/no_liquidity_1/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_1/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_2:
+  node-no_liquidity_2:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_2 --alias=no_liquidity_2 --tlscertpath=/cfg/no_liquidity_2/tls.cert
+    command: --tlsextradomain=node-no_liquidity_2 --alias=no_liquidity_2 --tlscertpath=/cfg/no_liquidity_2/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_2/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_3:
+  node-no_liquidity_3:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_3 --alias=no_liquidity_3 --tlscertpath=/cfg/no_liquidity_3/tls.cert
+    command: --tlsextradomain=node-no_liquidity_3 --alias=no_liquidity_3 --tlscertpath=/cfg/no_liquidity_3/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_3/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_4:
+  node-no_liquidity_4:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_4 --alias=no_liquidity_4 --tlscertpath=/cfg/no_liquidity_4/tls.cert
+    command: --tlsextradomain=node-no_liquidity_4 --alias=no_liquidity_4 --tlscertpath=/cfg/no_liquidity_4/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_4/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_no_liquidity_5:
+  node-no_liquidity_5:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_no_liquidity_5 --alias=no_liquidity_5 --tlscertpath=/cfg/no_liquidity_5/tls.cert
+    command: --tlsextradomain=node-no_liquidity_5 --alias=no_liquidity_5 --tlscertpath=/cfg/no_liquidity_5/tls.cert
       --adminmacaroonpath=/cfg/no_liquidity_5/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node0_0:
+  node-node0_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node0_0 --alias=node0_0 --tlscertpath=/cfg/node0_0/tls.cert
+    command: --tlsextradomain=node-node0_0 --alias=node0_0 --tlscertpath=/cfg/node0_0/tls.cert
       --adminmacaroonpath=/cfg/node0_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node0_1:
+  node-node0_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node0_1 --alias=node0_1 --tlscertpath=/cfg/node0_1/tls.cert
+    command: --tlsextradomain=node-node0_1 --alias=node0_1 --tlscertpath=/cfg/node0_1/tls.cert
       --adminmacaroonpath=/cfg/node0_1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node1_0:
+  node-node1_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node1_0 --alias=node1_0 --tlscertpath=/cfg/node1_0/tls.cert
+    command: --tlsextradomain=node-node1_0 --alias=node1_0 --tlscertpath=/cfg/node1_0/tls.cert
       --adminmacaroonpath=/cfg/node1_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node1_1:
+  node-node1_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node1_1 --alias=node1_1 --tlscertpath=/cfg/node1_1/tls.cert
+    command: --tlsextradomain=node-node1_1 --alias=node1_1 --tlscertpath=/cfg/node1_1/tls.cert
       --adminmacaroonpath=/cfg/node1_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node2_0:
+  node-node2_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node2_0 --alias=node2_0 --tlscertpath=/cfg/node2_0/tls.cert
+    command: --tlsextradomain=node-node2_0 --alias=node2_0 --tlscertpath=/cfg/node2_0/tls.cert
       --adminmacaroonpath=/cfg/node2_0/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node2_1:
+  node-node2_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node2_1 --alias=node2_1 --tlscertpath=/cfg/node2_1/tls.cert
+    command: --tlsextradomain=node-node2_1 --alias=node2_1 --tlscertpath=/cfg/node2_1/tls.cert
       --adminmacaroonpath=/cfg/node2_1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node3_0:
+  node-node3_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node3_0 --alias=node3_0 --tlscertpath=/cfg/node3_0/tls.cert
+    command: --tlsextradomain=node-node3_0 --alias=node3_0 --tlscertpath=/cfg/node3_0/tls.cert
       --adminmacaroonpath=/cfg/node3_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node3_1:
+  node-node3_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node3_1 --alias=node3_1 --tlscertpath=/cfg/node3_1/tls.cert
+    command: --tlsextradomain=node-node3_1 --alias=node3_1 --tlscertpath=/cfg/node3_1/tls.cert
       --adminmacaroonpath=/cfg/node3_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node4_0:
+  node-node4_0:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node4_0 --alias=node4_0 --tlscertpath=/cfg/node4_0/tls.cert
+    command: --tlsextradomain=node-node4_0 --alias=node4_0 --tlscertpath=/cfg/node4_0/tls.cert
       --adminmacaroonpath=/cfg/node4_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_node4_1:
+  node-node4_1:
     restart: unless-stopped
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
     - lnd:/cfg
-    command: --tlsextradomain=node_node4_1 --alias=node4_1 --tlscertpath=/cfg/node4_1/tls.cert
+    command: --tlsextradomain=node-node4_1 --alias=node4_1 --tlscertpath=/cfg/node4_1/tls.cert
       --adminmacaroonpath=/cfg/node4_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
     build: lnd
     environment: []
-  node_start:
+  node-start:
     restart: unless-stopped
-    image: elementsproject/lightningd:v0.11.0.1
     ports: []
     volumes:
-    - ./c-lightning.conf:/root/.lightning/regtest/config
-    command: --network=regtest
+    - ./lnd.conf:/root/.lnd/lnd.conf
+    - lnd:/cfg
+    command: --tlsextradomain=node-start --alias=start --tlscertpath=/cfg/start/tls.cert
+      --adminmacaroonpath=/cfg/start/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
-    environment:
-    - EXPOSE_TCP=true
-    - LIGHTNINGD_NETWORK=regtest
+    build: lnd
+    environment: []
   testrunner:
     restart: ""
     ports: []
@@ -273,28 +273,28 @@ services:
     command: ""
     depends_on:
     - bitcoind
-    - node_black_hole
-    - node_black_hole_indirect
-    - node_destination1
-    - node_destination2
-    - node_no_liquidity_0
-    - node_no_liquidity_1
-    - node_no_liquidity_2
-    - node_no_liquidity_3
-    - node_no_liquidity_4
-    - node_no_liquidity_5
-    - node_node0_0
-    - node_node0_1
-    - node_node1_0
-    - node_node1_1
-    - node_node2_0
-    - node_node2_1
-    - node_node3_0
-    - node_node3_1
-    - node_node4_0
-    - node_node4_1
-    - node_start
+    - node-black_hole
+    - node-black_hole_indirect
+    - node-destination1
+    - node-destination2
+    - node-no_liquidity_0
+    - node-no_liquidity_1
+    - node-no_liquidity_2
+    - node-no_liquidity_3
+    - node-no_liquidity_4
+    - node-no_liquidity_5
+    - node-node0_0
+    - node-node0_1
+    - node-node1_0
+    - node-node1_1
+    - node-node2_0
+    - node-node2_1
+    - node-node3_0
+    - node-node3_1
+    - node-node4_0
+    - node-node4_1
+    - node-start
     build: .
     environment:
-    - TARGET=cln
+    - TARGET=lnd
 

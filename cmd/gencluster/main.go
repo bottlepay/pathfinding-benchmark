@@ -81,7 +81,7 @@ func run() error {
 	}
 
 	for _, alias := range nodes {
-		name := "node_" + alias
+		name := "node-" + alias
 		depends = append(depends, name)
 
 		policy := nodesSet[alias]

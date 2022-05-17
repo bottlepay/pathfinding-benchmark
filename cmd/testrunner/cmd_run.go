@@ -145,7 +145,7 @@ func run(_ *cli.Context) error {
 		for peer, channels := range peers.Channels {
 			peerClient := clients[peer]
 			peerKey := peerClient.PubKey()
-			rpcHost := fmt.Sprintf("node_%v:9735", peer)
+			rpcHost := fmt.Sprintf("node-%v:9735", peer)
 
 			nodeLog.Infow("Connecting", "peer", peer,
 				"peerPubKey", peerKey, "host", rpcHost)
