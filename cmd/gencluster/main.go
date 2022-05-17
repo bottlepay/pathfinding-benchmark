@@ -20,7 +20,7 @@ type volume struct {
 }
 
 type service struct {
-	Restart        string
+	Restart        string `yaml:",omitempty"`
 	Image          string `yaml:",omitempty"`
 	Ports, Volumes []string
 	Command        string
@@ -105,9 +105,14 @@ func run() error {
 				Command: "--network=regtest",
 			}
 		} else {
+			cfg.Services["_lnd_build"] = service{
+				Image:   "lnd",
+				Command: "echo build completed",
+				Build:   "lnd",
+			}
+
 			serv = service{
-				//Image: "lightninglabs/lnd:v0.14.3-beta",
-				Build:     "lnd",
+				Image:     "lnd",
 				DependsOn: []string{"bitcoind"},
 				Volumes: []string{
 					"./lnd.conf:/root/.lnd/lnd.conf",
