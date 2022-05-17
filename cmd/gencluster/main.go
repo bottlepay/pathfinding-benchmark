@@ -106,14 +106,14 @@ func run() error {
 			}
 		} else {
 			cfg.Services["_lnd_build"] = service{
-				Image:   "lnd",
+				Image:   "pathfinding-benchmark-lnd",
 				Command: "echo build completed",
 				Build:   "lnd",
 			}
 
 			serv = service{
-				Image:     "lnd",
-				DependsOn: []string{"bitcoind"},
+				Image:     "pathfinding-benchmark-lnd",
+				DependsOn: []string{"bitcoind", "_lnd_build"},
 				Volumes: []string{
 					"./lnd.conf:/root/.lnd/lnd.conf",
 					"lnd:/cfg",

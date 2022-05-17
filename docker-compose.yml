@@ -3,7 +3,7 @@ volumes:
   lnd: {}
 services:
   _lnd_build:
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes: []
     command: echo build completed
@@ -20,7 +20,7 @@ services:
     environment: []
   node-black_hole:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -29,10 +29,11 @@ services:
       --adminmacaroonpath=/cfg/black_hole/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-black_hole_indirect:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -42,10 +43,11 @@ services:
       --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-destination1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -54,10 +56,11 @@ services:
       --adminmacaroonpath=/cfg/destination1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-destination2:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -66,10 +69,11 @@ services:
       --adminmacaroonpath=/cfg/destination2/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -78,10 +82,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_0/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -90,10 +95,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_1/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_2:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -102,10 +108,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_2/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_3:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -114,10 +121,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_3/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_4:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -126,10 +134,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_4/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-no_liquidity_5:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -138,10 +147,11 @@ services:
       --adminmacaroonpath=/cfg/no_liquidity_5/admin.macaroon --bitcoin.basefee=0 --bitcoin.feerate=0
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node0_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -150,10 +160,11 @@ services:
       --adminmacaroonpath=/cfg/node0_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node0_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -162,10 +173,11 @@ services:
       --adminmacaroonpath=/cfg/node0_1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node1_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -174,10 +186,11 @@ services:
       --adminmacaroonpath=/cfg/node1_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node1_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -186,10 +199,11 @@ services:
       --adminmacaroonpath=/cfg/node1_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node2_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -198,10 +212,11 @@ services:
       --adminmacaroonpath=/cfg/node2_0/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node2_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -210,10 +225,11 @@ services:
       --adminmacaroonpath=/cfg/node2_1/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node3_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -222,10 +238,11 @@ services:
       --adminmacaroonpath=/cfg/node3_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node3_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -234,10 +251,11 @@ services:
       --adminmacaroonpath=/cfg/node3_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node4_0:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -246,10 +264,11 @@ services:
       --adminmacaroonpath=/cfg/node4_0/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-node4_1:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -258,10 +277,11 @@ services:
       --adminmacaroonpath=/cfg/node4_1/admin.macaroon --bitcoin.basefee=1000 --bitcoin.feerate=10000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   node-start:
     restart: unless-stopped
-    image: lnd
+    image: pathfinding-benchmark-lnd
     ports: []
     volumes:
     - ./lnd.conf:/root/.lnd/lnd.conf
@@ -270,6 +290,7 @@ services:
       --adminmacaroonpath=/cfg/start/admin.macaroon --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
+    - _lnd_build
     environment: []
   testrunner:
     ports: []
