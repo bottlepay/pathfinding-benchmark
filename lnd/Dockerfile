@@ -47,6 +47,8 @@ COPY --from=builder /go/bin/lnd /bin/
 COPY --from=builder /go/src/github.com/lightningnetwork/lnd/scripts/verify-install.sh /
 COPY --from=builder /go/src/github.com/lightningnetwork/lnd/scripts/keys/* /keys/
 
+COPY run_lnd.sh /bin/
+
 # Store the SHA256 hash of the binaries that were just produced for later
 # verification.
 RUN sha256sum /bin/lnd /bin/lncli > /shasums.txt \
@@ -55,5 +57,4 @@ RUN sha256sum /bin/lnd /bin/lncli > /shasums.txt \
 # Expose lnd ports (p2p, rpc).
 EXPOSE 9735 10009
 
-# Specify the start command and entrypoint as the lnd daemon.
-ENTRYPOINT ["lnd"]
+ENTRYPOINT ["/bin/run_lnd.sh"]

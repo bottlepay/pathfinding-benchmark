@@ -56,10 +56,6 @@ func run() error {
 		Version: "3.4",
 	}
 
-	var depends = []string{
-		"bitcoind",
-	}
-
 	nodesSet := make(map[string]graphreader.PolicyData)
 	for alias, peers := range graph.Nodes {
 		var ok bool
@@ -80,13 +76,23 @@ func run() error {
 		return fmt.Errorf("unknown target %v", target)
 	}
 
-	for _, alias := range nodes {
+	const concurrency = 5
+
+	prevLnd := make([]string, concurrency)
+	for i, alias := range nodes {
+		startupChainIdx := i % concurrency
+
 		name := "node-" + alias
-		depends = append(depends, name)
 
 		policy := nodesSet[alias]
 
 		var serv service
+
+		cfg.Services["_lnd_build"] = service{
+			Image:   "pathfinding-benchmark-lnd",
+			Command: "echo build completed",
+			Build:   "lnd",
+		}
 
 		if alias == "start" && target == "cln" {
 			serv = service{
@@ -105,12 +111,6 @@ func run() error {
 				Command: "--network=regtest",
 			}
 		} else {
-			cfg.Services["_lnd_build"] = service{
-				Image:   "pathfinding-benchmark-lnd",
-				Command: "echo build completed",
-				Build:   "lnd",
-			}
-
 			serv = service{
 				Image:     "pathfinding-benchmark-lnd",
 				DependsOn: []string{"bitcoind", "_lnd_build"},
@@ -121,16 +121,22 @@ func run() error {
 				Command: fmt.Sprintf("--tlsextradomain=%v --alias=%v --tlscertpath=/cfg/%v/tls.cert --adminmacaroonpath=/cfg/%v/admin.macaroon --bitcoin.basefee=%v --bitcoin.feerate=%v",
 					name, alias, alias, alias, policy.BaseFee, policy.FeeRate),
 			}
+
+			if prevLnd[startupChainIdx] != "" {
+				serv.Environment = []string{fmt.Sprintf("WAIT_FOR_LND=%v", prevLnd[startupChainIdx])}
+			}
+
+			prevLnd[startupChainIdx] = alias
 		}
 
 		serv.Restart = "unless-stopped"
 
 		cfg.Services[name] = serv
+
 	}
 
 	cfg.Services["testrunner"] = service{
-		Build:     ".",
-		DependsOn: depends,
+		Build: ".",
 		Volumes: []string{
 			"lnd:/lnd",
 			"./graph.yml:/graph.yml",

@@ -96,7 +96,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=black_hole
   node-no_liquidity_2:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -109,7 +110,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=black_hole_indirect
   node-no_liquidity_3:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -122,7 +124,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=destination1
   node-no_liquidity_4:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -135,7 +138,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=destination2
   node-no_liquidity_5:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -148,7 +152,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_0
   node-node0_0:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -161,7 +166,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_1
   node-node0_1:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -174,7 +180,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_2
   node-node1_0:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -187,7 +194,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_3
   node-node1_1:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -200,7 +208,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_4
   node-node2_0:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -213,7 +222,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=no_liquidity_5
   node-node2_1:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -226,7 +236,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node0_0
   node-node3_0:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -239,7 +250,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node0_1
   node-node3_1:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -252,7 +264,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node1_0
   node-node4_0:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -265,7 +278,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node1_1
   node-node4_1:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -278,7 +292,8 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node2_0
   node-start:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -291,36 +306,15 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment: []
+    environment:
+    - WAIT_FOR_LND=node2_1
   testrunner:
     ports: []
     volumes:
     - lnd:/lnd
     - ./graph.yml:/graph.yml
     command: ""
-    depends_on:
-    - bitcoind
-    - node-black_hole
-    - node-black_hole_indirect
-    - node-destination1
-    - node-destination2
-    - node-no_liquidity_0
-    - node-no_liquidity_1
-    - node-no_liquidity_2
-    - node-no_liquidity_3
-    - node-no_liquidity_4
-    - node-no_liquidity_5
-    - node-node0_0
-    - node-node0_1
-    - node-node1_0
-    - node-node1_1
-    - node-node2_0
-    - node-node2_1
-    - node-node3_0
-    - node-node3_1
-    - node-node4_0
-    - node-node4_1
-    - node-start
+    depends_on: []
     build: .
     environment:
     - TARGET=lnd

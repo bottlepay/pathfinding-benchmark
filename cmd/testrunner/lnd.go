@@ -46,7 +46,7 @@ func getLndConnection(alias string) (*lndConnection, error) {
 			var err error
 			conn, err = getClientConn(alias)
 			return err
-		}, 10)
+		}, 60)
 	if err != nil {
 		return nil, err
 	}
