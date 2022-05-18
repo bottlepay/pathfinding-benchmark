@@ -181,10 +181,10 @@ func (l *lndConnection) ActiveChannels() (int, error) {
 	return len(resp.Channels), nil
 }
 
-func (l *lndConnection) NetworkEdgeCount() (int, error) {
+func (l *lndConnection) IsSynced(totalEdges, localChannels int) (bool, error) {
 	resp, err := l.lightningClient.DescribeGraph(context.Background(), &lnrpc.ChannelGraphRequest{})
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	edges := 0
@@ -199,7 +199,9 @@ func (l *lndConnection) NetworkEdgeCount() (int, error) {
 		}
 	}
 
-	return edges, nil
+	log.Debugw("Syncing", "edges", edges, "totalEdges", totalEdges)
+
+	return edges == totalEdges, nil
 }
 
 func (l *lndConnection) AddInvoice(amtMsat int64) (string, error) {

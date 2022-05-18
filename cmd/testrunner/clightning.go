@@ -126,10 +126,10 @@ func (l *clightningConnection) ActiveChannels() (int, error) {
 
 }
 
-func (l *clightningConnection) NetworkEdgeCount() (int, error) {
+func (l *clightningConnection) IsSynced(totalEdges, localChannels int) (bool, error) {
 	channels, err := l.client.ListChannelsBySource("")
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	var activeCount int
@@ -139,7 +139,9 @@ func (l *clightningConnection) NetworkEdgeCount() (int, error) {
 		}
 	}
 
-	return activeCount, nil
+	log.Debugw("Syncing", "edges", activeCount, "totalEdges", totalEdges)
+
+	return activeCount == totalEdges, nil
 }
 
 func (l *clightningConnection) AddInvoice(amtMsat int64) (string, error) {

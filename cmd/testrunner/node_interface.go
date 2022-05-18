@@ -17,7 +17,7 @@ type nodeInterface interface {
 	HasFunds() error
 	PubKey() string
 	SetPolicy(chanPoint *lnrpc.ChannelPoint, policy *graphreader.PolicyData) error
-	NetworkEdgeCount() (int, error)
+	IsSynced(int, int) (bool, error)
 	Restart() (nodeInterface, error)
 }
 

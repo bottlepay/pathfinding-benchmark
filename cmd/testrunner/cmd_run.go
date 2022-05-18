@@ -133,6 +133,7 @@ func run(_ *cli.Context) error {
 	log.Infow("Wait for coin and open channels")
 	expectedChannelCount := make(map[string]int)
 	totalChannelCount := 0
+	localChannelCount := 0
 
 	for alias, peers := range graph.Nodes {
 		nodeLog := log.With("node", alias)
@@ -169,6 +170,10 @@ func run(_ *cli.Context) error {
 				expectedChannelCount[alias]++
 				expectedChannelCount[peer]++
 				totalChannelCount++
+
+				if alias == "start" || peer == "start" {
+					localChannelCount++
+				}
 			}
 		}
 	}
@@ -217,14 +222,14 @@ func run(_ *cli.Context) error {
 	// Wait for propagation
 	log.Infow("Wait for propagation")
 	err = try(func() error {
-		edgeCount, err := clients["start"].NetworkEdgeCount()
+		sync, err := clients["start"].IsSynced(
+			totalChannelCount*2, localChannelCount,
+		)
 		if err != nil {
 			return err
 		}
 
-		log.Debugw("Gossiped edges", "count", edgeCount, "expected", totalChannelCount*2)
-
-		if edgeCount != totalChannelCount*2 {
+		if !sync {
 			return errors.New("still waiting for edges")
 		}
 
