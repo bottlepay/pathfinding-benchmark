@@ -50,7 +50,7 @@ func getBitcoindConnection() (*rpcclient.Client, error) {
 
 func run(_ *cli.Context) error {
 	target := os.Getenv("TARGET")
-	if target != "cln" && target != "lnd" {
+	if target != "cln" && target != "lnd" && target != "lnd-managej" {
 		return fmt.Errorf("unknown target %v", target)
 	}
 
@@ -91,9 +91,12 @@ func run(_ *cli.Context) error {
 		var client nodeInterface
 		var err error
 
-		if node == "start" && target == "cln" {
+		switch {
+		case node == "start" && target == "cln":
 			client, err = getClightningConnection(node)
-		} else {
+		case node == "start" && target == "lnd-managej":
+			client, err = getLndManageJConnection(node)
+		default:
 			client, err = getLndConnection(node)
 		}
 
@@ -226,6 +229,8 @@ func run(_ *cli.Context) error {
 			totalChannelCount*2, localChannelCount,
 		)
 		if err != nil {
+			log.Errorw("Propagation error", "err", err)
+
 			return err
 		}
 

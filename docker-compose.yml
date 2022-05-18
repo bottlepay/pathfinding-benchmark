@@ -18,6 +18,16 @@ services:
     command: ""
     depends_on: []
     environment: []
+  lnd-managej:
+    ports:
+    - 9081:8081
+    volumes:
+    - lnd:/cfg
+    command: ""
+    depends_on:
+    - node-start
+    build: lnd-managej
+    environment: []
   node-black_hole:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -321,7 +331,8 @@ services:
     - node-node4_0
     - node-node4_1
     - node-start
+    - lnd-managej
     build: .
     environment:
-    - TARGET=lnd
+    - TARGET=lnd-managej
 

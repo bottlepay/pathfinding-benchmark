@@ -76,8 +76,14 @@ func run() error {
 	sort.SliceStable(nodes, func(i, j int) bool { return nodes[i] < nodes[j] })
 
 	target := os.Getenv("TARGET")
-	if target != "cln" && target != "lnd" {
+	if target != "cln" && target != "lnd" && target != "lnd-managej" {
 		return fmt.Errorf("unknown target %v", target)
+	}
+
+	cfg.Services["_lnd_build"] = service{
+		Image:   "pathfinding-benchmark-lnd",
+		Command: "echo build completed",
+		Build:   "lnd",
 	}
 
 	for _, alias := range nodes {
@@ -88,7 +94,8 @@ func run() error {
 
 		var serv service
 
-		if alias == "start" && target == "cln" {
+		switch {
+		case alias == "start" && target == "cln":
 			serv = service{
 				// TODO: Replace with 0.11 image.
 				Image: "elementsproject/lightningd:v0.11.0.1",
@@ -104,13 +111,8 @@ func run() error {
 				},
 				Command: "--network=regtest",
 			}
-		} else {
-			cfg.Services["_lnd_build"] = service{
-				Image:   "pathfinding-benchmark-lnd",
-				Command: "echo build completed",
-				Build:   "lnd",
-			}
 
+		default:
 			serv = service{
 				Image:     "pathfinding-benchmark-lnd",
 				DependsOn: []string{"bitcoind", "_lnd_build"},
@@ -126,6 +128,19 @@ func run() error {
 		serv.Restart = "unless-stopped"
 
 		cfg.Services[name] = serv
+	}
+
+	if target == "lnd-managej" {
+		cfg.Services["lnd-managej"] = service{
+			Build:     "lnd-managej",
+			DependsOn: []string{"node-start"},
+			Volumes: []string{
+				"lnd:/cfg",
+			},
+			Ports: []string{"9081:8081"},
+		}
+
+		depends = append(depends, "lnd-managej")
 	}
 
 	cfg.Services["testrunner"] = service{
