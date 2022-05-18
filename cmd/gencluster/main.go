@@ -125,11 +125,15 @@ func run() error {
 					name, alias, alias, alias, policy.BaseFee, policy.FeeRate),
 			}
 
-			if prevLnd[startupChainIdx] != "" {
-				serv.Environment = []string{fmt.Sprintf("WAIT_FOR_LND=%v", prevLnd[startupChainIdx])}
-			}
+			// All nodes except the start node are started in a chain to keep
+			// peak mem usage lower.
+			if alias != "start" {
+				if prevLnd[startupChainIdx] != "" {
+					serv.Environment = []string{fmt.Sprintf("WAIT_FOR_LND=%v", prevLnd[startupChainIdx])}
+				}
 
-			prevLnd[startupChainIdx] = alias
+				prevLnd[startupChainIdx] = alias
+			}
 		}
 
 		serv.Restart = "unless-stopped"

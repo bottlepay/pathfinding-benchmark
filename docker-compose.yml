@@ -317,8 +317,7 @@ services:
     depends_on:
     - bitcoind
     - _lnd_build
-    environment:
-    - WAIT_FOR_LND=node2_1
+    environment: []
   testrunner:
     ports: []
     volumes:
