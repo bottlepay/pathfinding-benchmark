@@ -13,7 +13,7 @@ ENV GODEBUG netdns=cgo
 # Pass a tag, branch or a commit using build-arg.  This allows a docker
 # image to be built from a specified Git state.  The default image
 # will use the Git tip of master by default.
-ARG checkout="b883ca6cc30b842a1324bcabba69164e9e96d557"
+ARG checkout="41564ff4588b62bc517b85f9adad05f8124a5817"
 ARG repo="https://github.com/bottlepay/lnd"
 
 # Install dependencies and build the binaries.

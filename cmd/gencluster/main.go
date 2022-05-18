@@ -72,7 +72,7 @@ func run() error {
 	sort.SliceStable(nodes, func(i, j int) bool { return nodes[i] < nodes[j] })
 
 	target := os.Getenv("TARGET")
-	if target != "cln" && target != "lnd" {
+	if target != "cln" && target != "lnd" && target != "lnd-managej" {
 		return fmt.Errorf("unknown target %v", target)
 	}
 
@@ -136,6 +136,18 @@ func run() error {
 
 		cfg.Services[name] = serv
 
+	}
+
+	if target == "lnd-managej" {
+		cfg.Services["lnd-managej"] = service{
+			Build:     "lnd-managej",
+			DependsOn: []string{"node-start"},
+			Volumes: []string{
+				"lnd:/cfg",
+			},
+			Ports:   []string{"9081:8081"},
+			Restart: "unless-stopped",
+		}
 	}
 
 	cfg.Services["testrunner"] = service{

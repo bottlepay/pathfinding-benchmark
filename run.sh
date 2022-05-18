@@ -2,11 +2,11 @@
 
 if [[ $1 == "" ]]
 then
-  echo "usage: run.sh lnd | cln"
+  echo "usage: run.sh lnd | lnd-managej | cln"
   exit 1
 fi
 
-if [[ $1 != 'cln' && $1 != 'lnd' ]]
+if [[ $1 != 'cln' && $1 != 'lnd' && $1 != 'lnd-managej' ]]
 then
   echo "unknown target"
   exit 1
