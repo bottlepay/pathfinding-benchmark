@@ -79,6 +79,13 @@ func run() error {
 	const concurrency = 5
 
 	prevLnd := make([]string, concurrency)
+
+	cfg.Services["_lnd_build"] = service{
+		Image:   "pathfinding-benchmark-lnd",
+		Command: "echo build completed",
+		Build:   "lnd",
+	}
+
 	for i, alias := range nodes {
 		startupChainIdx := i % concurrency
 
@@ -88,13 +95,8 @@ func run() error {
 
 		var serv service
 
-		cfg.Services["_lnd_build"] = service{
-			Image:   "pathfinding-benchmark-lnd",
-			Command: "echo build completed",
-			Build:   "lnd",
-		}
-
-		if alias == "start" && target == "cln" {
+		switch {
+		case alias == "start" && target == "cln":
 			serv = service{
 				// TODO: Replace with 0.11 image.
 				Image: "elementsproject/lightningd:v0.11.0.1",
@@ -110,7 +112,8 @@ func run() error {
 				},
 				Command: "--network=regtest",
 			}
-		} else {
+
+		default:
 			serv = service{
 				Image:     "pathfinding-benchmark-lnd",
 				DependsOn: []string{"bitcoind", "_lnd_build"},
