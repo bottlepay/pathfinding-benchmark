@@ -18,7 +18,7 @@ Relevant files:
 * [cmd/testrunner/cmd_run.go](cmd/testrunner/cmd_run.go) is the automated test
   that sets up channels and executes the payments.
 
-* [run.sh cln | lnd](run.sh) fires it all up. The argument controls the
+* [run.sh cln | lnd | lnd-managej](run.sh) fires it all up. The argument controls the
   implementation that is used for the `start` node.
 
 # Issues
