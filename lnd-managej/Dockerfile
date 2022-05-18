@@ -2,6 +2,11 @@ FROM gradle:latest
 RUN apt-get update
 RUN apt-get install postgresql sudo -y
 
+RUN /etc/init.d/postgresql start && \
+    sudo -u postgres psql -c "CREATE USER bitcoin WITH PASSWORD 'unset'" && \
+    sudo -u postgres createdb lndmanagej -O bitcoin && \
+    /etc/init.d/postgresql stop
+
 RUN git clone https://github.com/C-Otto/lnd-manageJ.git && \
     cd lnd-manageJ && \
     git checkout 493b11cbd325e00a84a01ce118b24dbdfcb6f9d1
@@ -22,8 +27,6 @@ RUN echo "server.address=0.0.0.0" >> /root/override.properties
 
 EXPOSE 8081
 CMD /etc/init.d/postgresql start && \
-    sudo -u postgres psql -c "CREATE USER bitcoin WITH PASSWORD 'unset'" && \
-    sudo -u postgres createdb lndmanagej -O bitcoin && \
     java -jar application/build/libs/application-boot.jar --spring.config.location=classpath:application.properties,/root/override.properties
 
 
