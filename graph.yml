@@ -4,6 +4,7 @@ tests:
   - destination2: 25000
   - destination1: 25000
   - destination2: 25000
+  - destination3: 80000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -35,15 +36,23 @@ nodes:
   destination2:
     policy: normal
 
+  destination3:
+    policy: normal
+
   start:
     policy: normal
     channels:
       node0_0:
         - capacity: 150000
-
       node0_1:
         - capacity: 150000
           remoteBalance: 140000
+      mpp0_0:
+        - capacity: 100000
+          remoteBalance: 50000
+      mpp0_1:
+        - capacity: 100000
+          remoteBalance: 50000
 
   node0_0:
     policy: normal
@@ -235,3 +244,36 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
+  mpp0_0:
+    policy: normal
+    channels:
+      mpp1_0:
+        - capacity: 100000
+          remoteBalance: 70000
+      mpp1_1:
+        - capacity: 100000
+          remoteBalance: 70000
+
+  mpp0_1:
+    policy: normal
+    channels:
+      mpp1_0:
+        - capacity: 100000
+          remoteBalance: 70000
+      mpp1_1:
+        - capacity: 100000
+          remoteBalance: 70000
+
+  mpp1_0:
+    policy: normal
+    channels:
+      destination3:
+        - capacity: 500000
+          remoteBalance: 50000
+
+  mpp1_1:
+    policy: normal
+    channels:
+      destination3:
+        - capacity: 500000
+          remoteBalance: 50000
