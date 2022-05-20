@@ -227,28 +227,35 @@ func (l *lndConnection) SendPayment(invoice string, aliasMap map[string]string) 
 		return err
 	}
 
-	prevHtlcs := 0
 	for {
 		update, err := stream.Recv()
 		if err != nil {
 			return err
 		}
 
-		htlcCount := len(update.Htlcs)
-		for i := prevHtlcs; i < htlcCount; i++ {
+		if update.State != routerrpc.PaymentState_IN_FLIGHT {
+			// Print htlcs.
+			htlcCount := len(update.Htlcs)
+			for i := 0; i < htlcCount; i++ {
+				htlc := update.Htlcs[i]
+				route := htlc.Route
+				var hops []string
+				for _, hop := range route.Hops {
+					hops = append(hops, aliasMap[hop.PubKey])
+				}
 
-			route := update.Htlcs[i].Route
-			var hops []string
-			for _, hop := range route.Hops {
-				hops = append(hops, aliasMap[hop.PubKey])
+				var failureSrcIdx int = -1
+				if htlc.Failure != nil {
+					failureSrcIdx = int(htlc.Failure.FailureSourceIndex)
+				}
+
+				log.Debugw("Payment update", "htlcIdx", i,
+					"amt", route.Hops[len(route.Hops)-1].AmtToForwardMsat/1000,
+					"route", hops,
+					"state", htlc.Status,
+					"failureSourceIdx", failureSrcIdx)
 			}
-			log.Debugw("Payment update", "htlcIdx", i,
-				"amt", route.Hops[len(route.Hops)-1].AmtToForwardMsat/1000,
-				"route", hops)
-		}
-		prevHtlcs = htlcCount
 
-		if update.State == routerrpc.PaymentState_SUCCEEDED {
 			return nil
 		}
 	}

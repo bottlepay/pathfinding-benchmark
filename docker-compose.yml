@@ -18,17 +18,6 @@ services:
     command: ""
     depends_on: []
     environment: []
-  lnd-managej:
-    restart: unless-stopped
-    ports:
-    - 9081:8081
-    volumes:
-    - lnd:/cfg
-    command: ""
-    depends_on:
-    - node-start
-    build: lnd-managej
-    environment: []
   node-black_hole:
     restart: unless-stopped
     image: pathfinding-benchmark-lnd
@@ -51,7 +40,7 @@ services:
     - lnd:/cfg
     command: --tlsextradomain=node-black_hole_indirect --alias=black_hole_indirect
       --tlscertpath=/cfg/black_hole_indirect/tls.cert --adminmacaroonpath=/cfg/black_hole_indirect/admin.macaroon
-      --bitcoin.basefee=0 --bitcoin.feerate=0
+      --bitcoin.basefee=100 --bitcoin.feerate=1000
     depends_on:
     - bitcoind
     - _lnd_build
@@ -327,5 +316,5 @@ services:
     depends_on: []
     build: .
     environment:
-    - TARGET=lnd-managej
+    - TARGET=lnd
 

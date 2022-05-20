@@ -27,22 +27,7 @@ policies:
 # itself with its peers. The value of each peer is a list of channels between
 # the initiator node and the peer.
 
-# channels:
-#   destination1:
-
-#   start:
-#     node0_0:
-#       - capacity: 150000
-#         policy: normal
-#   
-
-#   node0_0:
-#     destination1:
-#       - capacity: 150000
-#         policy: normal
-#   
-#         remoteBalance: 40000
-
+# open path: node0_0 -> node1_1 -> node2_0 -> node3_1 -> node4_1 -> destination1
 nodes:
   destination1:
     policy: normal
@@ -175,7 +160,7 @@ nodes:
           remoteBalance: 140000
 
   black_hole_indirect:
-    policy: cheap
+    policy: normal
     channels:
       no_liquidity_0:
         - capacity: 150000
