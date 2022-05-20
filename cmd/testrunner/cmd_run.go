@@ -244,8 +244,15 @@ func run(_ *cli.Context) error {
 		return err
 	}
 
+	// Record channel balance for fee calculation.
+	startChannelBalance, err := clients["start"].GetChannelBalance()
+	if err != nil {
+		return err
+	}
+
 	// Start test payments.
 	start := time.Now()
+	var totalPayAmt int
 	for _, test := range graph.Tests {
 		for dest, amt := range test {
 			invoice, err := clients[dest].AddInvoice(int64(amt * 1e3))
@@ -261,11 +268,25 @@ func run(_ *cli.Context) error {
 			}
 			elapsed := time.Since(startPayment)
 			log.Infow("Time elapsed", "time", elapsed.String())
+
+			totalPayAmt += amt
 		}
 	}
 
 	elapsed := time.Since(start)
 	log.Infow("Total time elapsed", "time", elapsed.String())
+
+	endChannelBalance, err := clients["start"].GetChannelBalance()
+	if err != nil {
+		return err
+	}
+
+	feesPaid := startChannelBalance - endChannelBalance - totalPayAmt
+	log.Infow("Balances",
+		"startBalance", startChannelBalance,
+		"endBalance", endChannelBalance,
+		"totalPayAmt", totalPayAmt,
+		"feesPaid", feesPaid)
 
 	log.Infow("Done")
 

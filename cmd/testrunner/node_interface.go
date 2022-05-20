@@ -19,6 +19,7 @@ type nodeInterface interface {
 	SetPolicy(chanPoint *lnrpc.ChannelPoint, policy *graphreader.PolicyData) error
 	IsSynced(int, int) (bool, error)
 	Restart() (nodeInterface, error)
+	GetChannelBalance() (int, error)
 }
 
 type info struct {

@@ -224,3 +224,9 @@ func (l *clightningConnection) Restart() (nodeInterface, error) {
 
 	return conn, nil
 }
+
+func (l *clightningConnection) GetChannelBalance() (int, error) {
+	// Not implemented.
+
+	return 0, nil
+}

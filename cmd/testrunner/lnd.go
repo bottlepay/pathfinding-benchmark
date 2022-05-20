@@ -290,3 +290,12 @@ func (l *lndConnection) Restart() (nodeInterface, error) {
 
 	return conn, nil
 }
+
+func (l *lndConnection) GetChannelBalance() (int, error) {
+	resp, err := l.lightningClient.ChannelBalance(context.Background(), &lnrpc.ChannelBalanceRequest{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int(resp.LocalBalance.Sat), nil
+}
