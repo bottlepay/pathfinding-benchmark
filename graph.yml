@@ -6,6 +6,7 @@ tests:
   - destination2: 25000
   - destination3: 80000
   - shortcut_destination: 20000
+  - long_route_destination: 20000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -43,6 +44,9 @@ nodes:
   shortcut_destination:
     policy: cheap
 
+  long_route_destination:
+    policy: cheap
+
   start:
     policy: normal
     channels:
@@ -74,6 +78,14 @@ nodes:
       shortcut_x:
         - capacity: 26000
           remoteBalance: 10000
+      # long route scenario:
+      # The only solution is using a very long route `start-a-b-c-d-e-f-g-destination` along large channels.
+      # The channels on the shorter routes `start-z-destination` and `start-z-y-destination` are smaller and
+      # do not have enough liquidity.
+      long_route_a:
+        - capacity: 10000000
+      long_route_z:
+        - capacity: 100000
 
   node0_0:
     policy: normal
@@ -326,3 +338,61 @@ nodes:
       shortcut_destination:
         - capacity: 45000
           remoteBalance: 30000
+
+  long_route_a:
+    policy: cheap
+    channels:
+      long_route_b:
+        - capacity: 10000000
+
+  long_route_b:
+    policy: cheap
+    channels:
+      long_route_c:
+        - capacity: 10000000
+
+  long_route_c:
+    policy: cheap
+    channels:
+      long_route_d:
+        - capacity: 10000000
+
+  long_route_d:
+    policy: cheap
+    channels:
+      long_route_e:
+        - capacity: 10000000
+
+  long_route_e:
+    policy: cheap
+    channels:
+      long_route_f:
+        - capacity: 10000000
+
+  long_route_f:
+    policy: cheap
+    channels:
+      long_route_g:
+        - capacity: 10000000
+
+  long_route_g:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 10000000
+
+  long_route_z:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 50000
+          remoteBalance: 40000
+      long_route_y:
+        - capacity: 50000
+
+  long_route_y:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 50000
+          remoteBalance: 40000

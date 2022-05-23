@@ -12,13 +12,13 @@ then
   exit 1
 fi
 
-# Select target: 'cln' or 'lnd'
+# Select target: 'cln' or 'lnd' or 'lnd-managej'
 export TARGET=$1
 
 # Generate up to date docker compose file from graph.yml
 go run ./cmd/gencluster/... > docker-compose.yml
 
-# Make sure that all leftovers from a previous run are removed. 
+# Make sure that all leftovers from a previous run are removed.
 docker-compose down -v --remove-orphans
 
 # Spin up the stack and output logs as a foreground process. Grep filters the
