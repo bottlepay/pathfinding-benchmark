@@ -13,7 +13,7 @@ ENV GODEBUG netdns=cgo
 # Pass a tag, branch or a commit using build-arg.  This allows a docker
 # image to be built from a specified Git state.  The default image
 # will use the Git tip of master by default.
-ARG checkout="41564ff4588b62bc517b85f9adad05f8124a5817"
+ARG checkout="e45a59fc6c860f4de23d43ac3e0736d4b392c36a"
 ARG repo="https://github.com/bottlepay/lnd"
 
 # Install dependencies and build the binaries.
@@ -24,7 +24,7 @@ RUN apk add --no-cache --update alpine-sdk \
 &&  git clone $repo /go/src/github.com/lightningnetwork/lnd \
 &&  cd /go/src/github.com/lightningnetwork/lnd \
 &&  git checkout $checkout \
-&&  make release-install
+&&  make install
 
 # Start a new, final image.
 FROM alpine as final

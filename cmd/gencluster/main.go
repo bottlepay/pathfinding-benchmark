@@ -129,7 +129,8 @@ func run() error {
 			// peak mem usage lower.
 			if alias != "start" {
 				if prevLnd[startupChainIdx] != "" {
-					serv.Environment = []string{fmt.Sprintf("WAIT_FOR_LND=%v", prevLnd[startupChainIdx])}
+					// Staggered start up disabled after lnd mem optimization.
+					// serv.Environment = []string{fmt.Sprintf("WAIT_FOR_LND=%v", prevLnd[startupChainIdx])}
 				}
 
 				prevLnd[startupChainIdx] = alias
