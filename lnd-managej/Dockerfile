@@ -9,7 +9,7 @@ RUN /etc/init.d/postgresql start && \
 
 RUN git clone https://github.com/C-Otto/lnd-manageJ.git && \
     cd lnd-manageJ && \
-    git checkout 493b11cbd325e00a84a01ce118b24dbdfcb6f9d1
+    git checkout 777a0e9c2412b3b7bd682b3cd1b4832472135650
 
 WORKDIR lnd-manageJ
 RUN gradle application:bootJar
@@ -19,9 +19,6 @@ RUN echo "[lnd]" >> /root/.config/lnd-manageJ.conf
 RUN echo "host=node-start" >> /root/.config/lnd-manageJ.conf
 RUN echo "macaroon_file=/cfg/start/admin.macaroon" >> /root/.config/lnd-manageJ.conf
 RUN echo "cert_file=/cfg/start/tls.cert" >> /root/.config/lnd-manageJ.conf
-
-RUN echo "[pickhardt-payments]" >> /root/.config/lnd-manageJ.conf
-RUN echo "quantization=5000" >> /root/.config/lnd-manageJ.conf
 
 RUN echo "server.address=0.0.0.0" >> /root/override.properties
 

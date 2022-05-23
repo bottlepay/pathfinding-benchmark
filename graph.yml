@@ -5,6 +5,7 @@ tests:
   - destination1: 25000
   - destination2: 25000
   - destination3: 80000
+  - shortcut_destination: 20000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -39,6 +40,9 @@ nodes:
   destination3:
     policy: normal
 
+  shortcut_destination:
+    policy: cheap
+
   start:
     policy: normal
     channels:
@@ -53,6 +57,23 @@ nodes:
       mpp0_1:
         - capacity: 100000
           remoteBalance: 50000
+      # shortcut scenario:
+      # The optimal solution is to split the payment into start-a-b-destination and start-x-y-destination.
+      # The route start-x-b-destination is better, but the channel b-destination does not have enough
+      # liquidity for the whole amount.
+      # Inspired by "Optimally Reliable & Cheap Payment Flows on the Lightning Network"
+      # https://arxiv.org/abs/2107.05322
+      #
+      #         shortcut_a - shortcut_b
+      #       /                 /      \
+      # start         ----------        shortcut_destination
+      #       \     /                  /
+      #        shortcut_x - shortcut_y
+      shortcut_a:
+        - capacity: 26000
+      shortcut_x:
+        - capacity: 26000
+          remoteBalance: 10000
 
   node0_0:
     policy: normal
@@ -66,7 +87,7 @@ nodes:
         - capacity: 150000
       black_hole_indirect:
         - capacity: 150000
-  
+
   node0_1:
     policy: normal
     channels:
@@ -184,7 +205,7 @@ nodes:
       no_liquidity_5:
         - capacity: 150000
 
-  no_liquidity_0: 
+  no_liquidity_0:
     policy: cheap
     channels:
       destination1:
@@ -194,7 +215,7 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
-  no_liquidity_1: 
+  no_liquidity_1:
     policy: cheap
     channels:
       destination1:
@@ -204,7 +225,7 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
-  no_liquidity_2: 
+  no_liquidity_2:
     policy: cheap
     channels:
       destination1:
@@ -214,7 +235,7 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
-  no_liquidity_3: 
+  no_liquidity_3:
     policy: cheap
     channels:
       destination1:
@@ -224,7 +245,7 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
-  no_liquidity_4: 
+  no_liquidity_4:
     policy: cheap
     channels:
       destination1:
@@ -234,7 +255,7 @@ nodes:
         - capacity: 150000
           remoteBalance: 140000
 
-  no_liquidity_5: 
+  no_liquidity_5:
     policy: cheap
     channels:
       destination1:
@@ -277,3 +298,31 @@ nodes:
       destination3:
         - capacity: 500000
           remoteBalance: 50000
+
+  shortcut_a:
+    policy: cheap
+    channels:
+      shortcut_b:
+        - capacity: 25000
+
+  shortcut_b:
+    policy: cheap
+    channels:
+      shortcut_destination:
+        - capacity: 45000
+          remoteBalance: 30000
+
+  shortcut_x:
+    policy: cheap
+    channels:
+      shortcut_y:
+        - capacity: 70000
+      shortcut_b:
+        - capacity: 90000
+
+  shortcut_y:
+    policy: cheap
+    channels:
+      shortcut_destination:
+        - capacity: 45000
+          remoteBalance: 30000
