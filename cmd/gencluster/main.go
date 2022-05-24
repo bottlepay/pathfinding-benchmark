@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/bottlepay/lightning-benchmark/graphreader"
 	"gopkg.in/yaml.v2"
@@ -36,9 +37,46 @@ func main() {
 	}
 }
 
+func writeVisualization(graph *graphreader.YamlGraph, outFile string) error {
+	var b strings.Builder
+	b.WriteString("graph {\n")
+	b.WriteString("  nodesep=1\n")
+
+	for alias, node := range graph.Nodes {
+		b.WriteString(fmt.Sprintf(
+			"  %v[label=\"%v\\n[%v]\"]\n", alias, alias, node.Policy,
+		))
+		for peerAlias, peer := range node.Channels {
+			for _, channel := range peer {
+				b.WriteString(fmt.Sprintf(
+					"  %v -- %v [taillabel=\"%vk\", headlabel=\"%vk\"]\n",
+					alias, peerAlias,
+					(channel.Capacity-channel.RemoteBalance)/1e3, channel.RemoteBalance/1e3,
+				))
+
+			}
+		}
+	}
+
+	b.WriteString("}\n")
+
+	text := b.String()
+	err := os.WriteFile(outFile, []byte(text), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // This function generates a docker-compose.yml file from a graph definition.
 func run() error {
 	graph, err := graphreader.Read("graph.yml")
+	if err != nil {
+		return err
+	}
+
+	err = writeVisualization(graph, "graph.dot")
 	if err != nil {
 		return err
 	}
