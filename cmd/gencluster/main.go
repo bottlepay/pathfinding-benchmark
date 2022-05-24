@@ -99,7 +99,7 @@ func run() error {
 		case alias == "start" && target == "cln":
 			serv = service{
 				// TODO: Replace with 0.11 image.
-				Image: "elementsproject/lightningd:v0.11.0.1",
+				Image: "elementsproject/lightningd:v0.11.1",
 				// Image:     "cln:latest",
 
 				DependsOn: []string{"bitcoind"},

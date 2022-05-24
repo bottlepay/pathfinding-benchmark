@@ -120,11 +120,9 @@ func run(_ *cli.Context) error {
 			return err
 		}
 
-		for i := 0; i < 2; i++ {
-			_, err = bitcoindConn.SendToAddress(senderAddr, 1e8)
-			if err != nil {
-				return err
-			}
+		_, err = bitcoindConn.SendToAddress(senderAddr, 1e8)
+		if err != nil {
+			return err
 		}
 	}
 

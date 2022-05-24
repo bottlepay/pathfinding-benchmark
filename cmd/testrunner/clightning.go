@@ -100,7 +100,9 @@ func (l *clightningConnection) NewAddress() (string, error) {
 func (l *clightningConnection) OpenChannel(peerKey string, amtSat int64, pushAmtSat int64) (*lnrpc.ChannelPoint, error) {
 	sat := glightning.NewSat64(uint64(amtSat))
 	pushMsat := glightning.NewMsat(uint64(pushAmtSat) * 1e3)
-	resp, err := l.client.FundChannelExt(peerKey, sat, nil, false, nil, pushMsat)
+	minConf := uint16(0)
+
+	resp, err := l.client.FundChannelExt(peerKey, sat, nil, false, &minConf, pushMsat)
 	if err != nil {
 		return nil, err
 	}
