@@ -12,6 +12,12 @@ then
   exit 1
 fi
 
+if [[ "$OSTYPE" == "darwin"* && $1 == 'lnd-managej' ]]
+then
+  echo "lnd-managej not supported on mac"
+  exit 1
+fi
+
 # Select target: 'cln' or 'lnd' or 'lnd-managej'
 export TARGET=$1
 
