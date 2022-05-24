@@ -29,9 +29,17 @@ Relevant files:
   As a workaround, this test uses a patched lnd that sends gossip more
   aggressively.
 
-* LND instances are spun up simultaneously. This creates a peak in memory usage.
-  If there isn't enough memory and LND OOM's, it may enter a non-recoverable
-  state: https://github.com/lightningnetwork/lnd/issues/6210#issuecomment-1123736209
+* LND instances are spun up simultaneously. This creates a peak in memory usage
+  (~256 mb per instance), mainly because of the scrypt parameters used for key
+  derivation. In this test, a patch is applied to lnd to generate keys with
+  lighter parameters.
+
+  Also the amount of memory that is preallocated for graph and channel caches is
+  reduced.
+
+  If there still isn't enough memory and LND OOMs, it may enter a
+  non-recoverable state:
+  https://github.com/lightningnetwork/lnd/issues/6210#issuecomment-1123736209
 
 ## Expected output
 
