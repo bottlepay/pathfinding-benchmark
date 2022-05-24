@@ -12,6 +12,8 @@ Relevant files:
 
   In this file, there's also a section `tests` that defines the test payments.
 
+  For basic visualization, see https://github.com/bottlepay/pathfinding-benchmark/issues/6.
+
 * [cmd/gencluster](cmd/gencluster) contains code to generate the
   [docker-compose](docker-compose.yml) file from `graph.yml`.
 
