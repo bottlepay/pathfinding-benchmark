@@ -17,6 +17,7 @@ type PolicyData struct {
 type YamlChannel struct {
 	Capacity      int
 	RemoteBalance int `yaml:"remoteBalance"`
+	Private       bool
 }
 
 type YamlGraph struct {

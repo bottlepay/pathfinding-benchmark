@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/bottlepay/lightning-benchmark/graphreader"
@@ -125,14 +126,15 @@ func (l *lndConnection) NewAddress() (string, error) {
 	return addrResp.Address, nil
 }
 
-func (l *lndConnection) OpenChannel(peerKey string, amtSat int64, pushAmtSat int64) (
-	*lnrpc.ChannelPoint, error) {
+func (l *lndConnection) OpenChannel(peerKey string, amtSat int64,
+	pushAmtSat int64, private bool) (*lnrpc.ChannelPoint, error) {
 
 	resp, err := l.lightningClient.OpenChannelSync(context.Background(), &lnrpc.OpenChannelRequest{
 		LocalFundingAmount: amtSat,
 		NodePubkeyString:   peerKey,
 		SpendUnconfirmed:   true,
 		PushSat:            pushAmtSat,
+		Private:            private,
 	})
 	if err != nil {
 		return nil, err
@@ -254,6 +256,10 @@ func (l *lndConnection) SendPayment(invoice string, aliasMap map[string]string) 
 					"route", hops,
 					"state", htlc.Status,
 					"failureSourceIdx", failureSrcIdx)
+			}
+
+			if update.State != routerrpc.PaymentState_SUCCEEDED {
+				return fmt.Errorf("payment failed: %v", update.State)
 			}
 
 			return nil
