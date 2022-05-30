@@ -163,16 +163,22 @@ func run(_ *cli.Context) error {
 				_, err := client.OpenChannel(
 					peerKey, int64(channel.Capacity),
 					int64(channel.RemoteBalance),
+					channel.Private,
 				)
 				if err != nil {
 					return err
 				}
 
+				startChannel := alias == "start" || peer == "start"
+
 				expectedChannelCount[alias]++
 				expectedChannelCount[peer]++
-				totalChannelCount++
 
-				if alias == "start" || peer == "start" {
+				if startChannel || !channel.Private {
+					totalChannelCount++
+				}
+
+				if startChannel {
 					localChannelCount++
 				}
 			}

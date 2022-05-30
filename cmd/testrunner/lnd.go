@@ -125,14 +125,15 @@ func (l *lndConnection) NewAddress() (string, error) {
 	return addrResp.Address, nil
 }
 
-func (l *lndConnection) OpenChannel(peerKey string, amtSat int64, pushAmtSat int64) (
-	*lnrpc.ChannelPoint, error) {
+func (l *lndConnection) OpenChannel(peerKey string, amtSat int64,
+	pushAmtSat int64, private bool) (*lnrpc.ChannelPoint, error) {
 
 	resp, err := l.lightningClient.OpenChannelSync(context.Background(), &lnrpc.OpenChannelRequest{
 		LocalFundingAmount: amtSat,
 		NodePubkeyString:   peerKey,
 		SpendUnconfirmed:   true,
 		PushSat:            pushAmtSat,
+		Private:            private,
 	})
 	if err != nil {
 		return nil, err
