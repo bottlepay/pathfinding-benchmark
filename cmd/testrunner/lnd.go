@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/bottlepay/lightning-benchmark/graphreader"
@@ -255,6 +256,10 @@ func (l *lndConnection) SendPayment(invoice string, aliasMap map[string]string) 
 					"route", hops,
 					"state", htlc.Status,
 					"failureSourceIdx", failureSrcIdx)
+			}
+
+			if update.State != routerrpc.PaymentState_SUCCEEDED {
+				return fmt.Errorf("payment failed: %v", update.State)
 			}
 
 			return nil

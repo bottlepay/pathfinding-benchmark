@@ -258,23 +258,31 @@ func run(_ *cli.Context) error {
 	start := time.Now()
 	var totalPayAmt int
 	for _, test := range graph.Tests {
-		for dest, amt := range test {
-			invoice, err := clients[dest].AddInvoice(int64(amt * 1e3))
-			if err != nil {
-				return err
-			}
-
-			startPayment := time.Now()
-			log.Infow("Sending payment", "invoice", invoice)
-			err = clients["start"].SendPayment(invoice, aliasMap)
-			if err != nil {
-				return err
-			}
-			elapsed := time.Since(startPayment)
-			log.Infow("Time elapsed", "time", elapsed.String())
-
-			totalPayAmt += amt
+		var (
+			dest string
+			amt  int
+		)
+		for dest, amt = range test {
+			break
 		}
+
+		invoice, err := clients[dest].AddInvoice(int64(amt * 1e3))
+		if err != nil {
+			return err
+		}
+
+		startPayment := time.Now()
+		log.Infow("Sending payment", "invoice", invoice)
+		err = clients["start"].SendPayment(invoice, aliasMap)
+		if err != nil {
+			log.Errorw("Test failed", "err", err)
+
+			continue
+		}
+		elapsed := time.Since(startPayment)
+		log.Infow("Time elapsed", "time", elapsed.String())
+
+		totalPayAmt += amt
 	}
 
 	elapsed := time.Since(start)
