@@ -7,6 +7,8 @@ tests:
   - destination3: 80000
   - shortcut_destination: 20000
   - long_route_destination: 20000
+  - parallel_channels_destination: 20000
+  - parallel_private_destination: 20000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -45,6 +47,12 @@ nodes:
     policy: cheap
 
   long_route_destination:
+    policy: cheap
+
+  parallel_channels_destination:
+    policy: cheap
+
+  parallel_private_destination:
     policy: cheap
 
   start:
@@ -86,6 +94,12 @@ nodes:
         - capacity: 10000000
       long_route_z:
         - capacity: 100000
+      # the payment needs to be split into two parts, one for each parallel channel to the destination
+      parallel_channels_x:
+        - capacity: 1000000
+      # as above, but one private channel needs to be traversed
+      parallel_private_x:
+        - capacity: 1000000
 
   node0_0:
     policy: normal
@@ -396,3 +410,22 @@ nodes:
       long_route_destination:
         - capacity: 50000
           remoteBalance: 40000
+
+  parallel_channels_x:
+    policy: cheap
+    channels:
+      parallel_channels_destination:
+        - capacity: 1000000
+          remoteBalance: 976000
+        - capacity: 1000000
+          remoteBalance: 976000
+
+  parallel_private_x:
+    policy: cheap
+    channels:
+      parallel_private_destination:
+        - capacity: 1000000
+          remoteBalance: 976000
+        - capacity: 1000000
+          remoteBalance: 976000
+          private: true
