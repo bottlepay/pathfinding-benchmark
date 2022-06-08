@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-if [[ $1 != 'cln' && $1 != 'lnd' && $1 != 'lnd-managej' ]]
+if [[ $1 != 'cln' && $1 != 'lnd' && $1 != 'lnd-managej' && $1 != 'sensei' ]]
 then
   echo "unknown target"
   exit 1

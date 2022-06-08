@@ -1,0 +1,386 @@
+syntax = "proto3";
+package sensei;
+
+option go_package = "github.com/bottlepay/sensei";
+
+service Admin {
+    rpc CreateAdmin (CreateAdminRequest) returns (CreateAdminResponse);
+    rpc StartAdmin (StartAdminRequest) returns (StartAdminResponse);
+    rpc ListNodes (ListNodesRequest) returns (ListNodesResponse);
+    rpc CreateNode (CreateNodeRequest) returns (CreateNodeResponse);
+    rpc DeleteNode (DeleteNodeRequest) returns (DeleteNodeResponse);
+    rpc GetStatus (GetStatusRequest) returns (GetStatusResponse);
+    rpc StartNode (AdminStartNodeRequest) returns (AdminStartNodeResponse);
+    rpc StopNode (AdminStopNodeRequest) returns (AdminStopNodeResponse);
+    rpc ListTokens (ListTokensRequest) returns (ListTokensResponse);
+    rpc CreateToken (CreateTokenRequest) returns (Token);
+    rpc DeleteToken (DeleteTokenRequest) returns (DeleteTokenResponse);
+}
+
+service Node {
+    rpc StartNode (StartNodeRequest) returns (StartNodeResponse);
+    rpc StopNode (StopNodeRequest) returns (StopNodeResponse);
+    rpc GetUnusedAddress (GetUnusedAddressRequest) returns (GetUnusedAddressResponse);
+    rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse);
+    rpc OpenChannels (OpenChannelsRequest) returns (OpenChannelsResponse);
+    rpc PayInvoice (PayInvoiceRequest) returns (PayInvoiceResponse);
+    rpc DecodeInvoice (DecodeInvoiceRequest) returns (DecodeInvoiceResponse);
+    rpc Keysend (KeysendRequest) returns (KeysendResponse);
+    rpc CreateInvoice (CreateInvoiceRequest) returns (CreateInvoiceResponse);
+    rpc LabelPayment (LabelPaymentRequest) returns (LabelPaymentResponse);
+    rpc DeletePayment (DeletePaymentRequest) returns (DeletePaymentResponse);
+    rpc ConnectPeer (ConnectPeerRequest) returns (ConnectPeerResponse);
+    rpc ListChannels (ListChannelsRequest) returns (ListChannelsResponse);
+    rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
+    rpc CloseChannel (CloseChannelRequest) returns (CloseChannelResponse);
+    rpc Info (InfoRequest) returns (InfoResponse);
+    rpc ListPeers (ListPeersRequest) returns (ListPeersResponse);
+    rpc SignMessage (SignMessageRequest) returns (SignMessageResponse);
+    rpc VerifyMessage (VerifyMessageRequest) returns (VerifyMessageResponse);
+}
+
+message ListNode {
+    string id = 1;
+    int64 created_at = 2;
+    int64 updated_at = 3;
+    uint32 role = 4;
+    string username = 5;
+    string alias = 6;
+    string network = 7;
+    string listen_addr = 8;
+    uint32 listen_port = 9;
+    string pubkey = 10;
+    uint32 status = 11;
+}
+
+message Token {
+    string id = 1;
+    int64 created_at = 2;
+    int64 updated_at = 3;
+    int64 expires_at = 4;
+    string name = 5;
+    string token = 6;
+    bool single_use = 7;
+    string scope = 8;
+}
+
+message PaginationRequest {
+    uint32 page = 1;
+    uint32 take = 3;
+    optional string query = 4;
+}
+
+message PaginationResponse {
+    bool has_more = 1;
+    uint64 total = 2;
+}
+
+message ListNodesRequest {
+    optional PaginationRequest pagination = 1;
+}
+
+message ListNodesResponse {
+    repeated ListNode nodes = 1;
+    PaginationResponse pagination = 2;
+}
+
+message ListTokensRequest {
+    optional PaginationRequest pagination = 1;
+}
+
+message ListTokensResponse {
+    repeated Token tokens = 1;
+    PaginationResponse pagination = 2;
+}
+
+message CreateAdminRequest {
+    string username = 1;
+    string alias = 2;
+    string passphrase = 3;
+    bool start = 4;
+}
+
+message CreateAdminResponse {
+    string pubkey = 1;
+    string macaroon = 2;
+    string id = 3;
+    uint32 role = 4;
+    string token = 5;
+}
+
+message CreateNodeRequest {
+    string username = 1;
+    string alias = 2;
+    string passphrase = 3;
+    bool start = 4;
+}
+message CreateNodeResponse {
+    string pubkey = 1;
+    string macaroon = 2;
+    string listen_addr = 3;
+    int32 listen_port = 4;
+    string id = 5;
+}
+
+message DeleteNodeRequest {
+    string pubkey = 1;
+}
+message DeleteNodeResponse {}
+
+message CreateTokenRequest {
+    string name = 1;
+    string scope = 2;
+    uint64 expires_at = 3;
+    bool single_use = 4;
+}
+
+message DeleteTokenRequest {
+    string id = 1;
+}
+message DeleteTokenResponse {}
+
+message StartAdminRequest {
+    string passphrase = 1;
+}
+message StartAdminResponse {
+    string pubkey = 1;
+    string macaroon = 2;
+    string token = 3;
+}
+
+message GetStatusRequest {}
+message GetStatusResponse {
+    string version = 1;
+    optional string alias = 2;
+    optional string pubkey = 3;
+    optional string username = 4;
+    optional uint32 role = 5;
+    bool created = 6;
+    bool running = 7;
+    bool authenticated = 8;
+}
+
+message StartNodeRequest {
+    string passphrase = 1;
+}
+message StartNodeResponse {}
+
+message StopNodeRequest {}
+message StopNodeResponse {}
+
+message AdminStartNodeRequest {
+    string passphrase = 1;
+    string pubkey = 2;
+}
+message AdminStartNodeResponse {
+    string macaroon = 1;
+}
+
+message AdminStopNodeRequest {
+    string pubkey = 1;
+}
+message AdminStopNodeResponse {}
+
+message GetUnusedAddressRequest {}
+message GetUnusedAddressResponse {
+    string address = 1;
+}
+
+message GetBalanceRequest {}
+message GetBalanceResponse {
+    uint64 balance_satoshis = 1;
+}
+
+message OpenChannelInfo {
+    string node_connection_string = 1;
+    uint64 amt_satoshis = 2;
+    bool public = 3;
+}
+
+message OpenChannelResult {
+    bool error = 1;
+    optional string error_message = 2;
+    optional string temp_channel_id = 3;
+}
+
+message OpenChannelsRequest {
+    repeated OpenChannelInfo channels = 1;
+}
+message OpenChannelsResponse {
+    repeated OpenChannelInfo channels = 1;
+    repeated OpenChannelResult results = 2;
+}
+
+message PayInvoiceRequest {
+    string invoice = 1;
+}
+message PayInvoiceResponse {}
+
+message DecodeInvoiceRequest {
+    string invoice = 1;
+}
+message DecodeInvoiceResponse {
+    Invoice invoice = 1;
+}
+message Invoice {
+    string payment_hash = 1;
+    string currency = 2;
+    uint64 amount = 3;
+    string description = 4;
+    uint64 expiry = 5;
+    uint64 timestamp = 6;
+    uint64 min_final_cltv_expiry = 7;
+    repeated RouteHint route_hints = 8;
+    Features features = 9;
+    string payee_pub_key = 10;
+}
+message RouteHint {
+    repeated RouteHintHop hops = 1;
+}
+message RouteHintHop {
+    string src_node_id = 1;
+    uint64 short_channel_id = 2;
+    RoutingFees fees = 3;
+    uint32 cltv_expiry_delta = 4;
+    optional uint64 htlc_minimum_msat = 5;
+    optional uint64 htlc_maximum_msat = 6;
+}
+message RoutingFees {
+    uint32 base_msat = 1;
+    uint32 proportional_millionths = 2;
+}
+message Features {
+    bool variable_length_onion = 1;
+    bool payment_secret = 2;
+    bool basic_mpp = 3;
+}
+
+message LabelPaymentRequest {
+    string label = 1;
+    string payment_hash = 2;
+}
+message LabelPaymentResponse {}
+
+message DeletePaymentRequest {
+    string payment_hash = 1;
+}
+message DeletePaymentResponse {}
+
+message KeysendRequest {
+    string dest_pubkey = 1;
+    uint64 amt_msat = 2;
+}
+message KeysendResponse {}
+
+message CreateInvoiceRequest {
+    uint64 amt_msat = 1;
+    string description = 2;
+}
+message CreateInvoiceResponse {
+    string invoice = 1;
+}
+
+message ConnectPeerRequest {
+    string node_connection_string = 1;
+}
+message ConnectPeerResponse {}
+
+message Channel {
+    string channel_id = 1;
+    optional string funding_txid = 2;
+    optional uint32 funding_tx_index = 3;
+    optional uint64 short_channel_id = 4;
+    uint64 channel_value_satoshis = 5;
+    uint64 balance_msat = 6;
+    optional uint64 unspendable_punishment_reserve = 7;
+    uint64 user_channel_id = 8;
+    uint64 outbound_capacity_msat = 9;
+    uint64 inbound_capacity_msat = 10;
+    optional uint32 confirmations_required = 11;
+    optional uint32 force_close_spend_delay = 12;
+    bool is_outbound = 13;
+    bool is_funding_locked = 14;
+    bool is_usable = 15;
+    bool is_public = 16;
+    string counterparty_pubkey = 17;
+    optional string alias = 18;
+}
+
+message ListChannelsRequest {
+    optional PaginationRequest pagination = 1;
+}
+message ListChannelsResponse {
+    repeated Channel channels = 1;
+    PaginationResponse pagination = 2;
+}
+
+message Payment {
+    string hash = 1;
+    optional string preimage = 2;
+    optional string secret = 3;
+    string status = 4;
+    optional int64 amt_msat = 5;
+    optional int64 fee_paid_msat = 6;
+    string origin = 7;
+    optional string label = 8;
+    optional string invoice = 9;
+}
+
+message PaymentsFilter {
+    optional string origin = 1;
+    optional string status = 2;
+}
+
+message ListPaymentsRequest {
+    optional PaginationRequest pagination = 1;
+    optional PaymentsFilter filter = 2;
+}
+message ListPaymentsResponse {
+    repeated Payment payments = 1;
+    PaginationResponse pagination = 2;
+}
+
+message CloseChannelRequest {
+    string channel_id = 1;
+    bool force = 2;
+}
+message CloseChannelResponse {}
+
+message Info {
+    string version = 1;
+    string node_pubkey = 2;
+    uint32 num_channels = 3;
+    uint32 num_usable_channels = 4;
+    uint32 num_peers = 5;
+}
+
+message InfoRequest {}
+message InfoResponse {
+    Info node_info = 1;
+}
+
+message Peer {
+    string node_pubkey = 1;
+}
+
+message ListPeersRequest {
+}
+message ListPeersResponse {
+    repeated Peer peers = 1;
+}
+
+message SignMessageRequest {
+    string message = 1;
+}
+message SignMessageResponse {
+    string signature = 1;
+}
+
+message VerifyMessageRequest {
+    string message = 1;
+    string signature = 2;
+}
+message VerifyMessageResponse {
+    bool valid = 1;
+    string pubkey = 2;
+}

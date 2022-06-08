@@ -72,7 +72,7 @@ func run() error {
 	sort.SliceStable(nodes, func(i, j int) bool { return nodes[i] < nodes[j] })
 
 	target := os.Getenv("TARGET")
-	if target != "cln" && target != "lnd" && target != "lnd-managej" {
+	if target != "cln" && target != "lnd" && target != "lnd-managej" && target != "sensei" {
 		return fmt.Errorf("unknown target %v", target)
 	}
 
@@ -111,6 +111,16 @@ func run() error {
 					"LIGHTNINGD_NETWORK=regtest",
 				},
 				Command: "--network=regtest",
+			}
+
+		case alias == "start" && target == "sensei":
+			serv = service{
+				Image:     "sensei-git",
+				DependsOn: []string{"bitcoind"},
+				Volumes: []string{
+					"lnd:/cfg",
+				},
+				Command: fmt.Sprintf("./senseid --network=regtest --bitcoind-rpc-host=bitcoind --bitcoind-rpc-port=8332 --bitcoind-rpc-username=test --bitcoind-rpc-password=test --database-url=sensei.db"),
 			}
 
 		default:
