@@ -127,9 +127,9 @@ func (l *lndConnection) NewAddress() (string, error) {
 }
 
 func (l *lndConnection) OpenChannel(peerKey string, amtSat int64,
-	pushAmtSat int64, private bool) (*lnrpc.ChannelPoint, error) {
+	pushAmtSat int64, private bool) error {
 
-	resp, err := l.lightningClient.OpenChannelSync(context.Background(), &lnrpc.OpenChannelRequest{
+	_, err := l.lightningClient.OpenChannelSync(context.Background(), &lnrpc.OpenChannelRequest{
 		LocalFundingAmount: amtSat,
 		NodePubkeyString:   peerKey,
 		SpendUnconfirmed:   true,
@@ -137,16 +137,10 @@ func (l *lndConnection) OpenChannel(peerKey string, amtSat int64,
 		Private:            private,
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	chanPoint := lnrpc.ChannelPoint{
-		FundingTxid: &lnrpc.ChannelPoint_FundingTxidBytes{
-			FundingTxidBytes: resp.GetFundingTxidBytes(),
-		},
-		OutputIndex: resp.OutputIndex,
-	}
-	return &chanPoint, nil
+	return nil
 }
 
 func (l *lndConnection) SetPolicy(chanPoint *lnrpc.ChannelPoint,

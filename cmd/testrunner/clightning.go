@@ -98,7 +98,7 @@ func (l *clightningConnection) NewAddress() (string, error) {
 }
 
 func (l *clightningConnection) OpenChannel(peerKey string, amtSat int64,
-	pushAmtSat int64, private bool) (*lnrpc.ChannelPoint, error) {
+	pushAmtSat int64, private bool) error {
 
 	sat := glightning.NewSat64(uint64(amtSat))
 	pushMsat := glightning.NewMsat(uint64(pushAmtSat) * 1e3)
@@ -106,18 +106,15 @@ func (l *clightningConnection) OpenChannel(peerKey string, amtSat int64,
 
 	resp, err := l.client.FundChannelExt(peerKey, sat, nil, private, &minConf, pushMsat)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	txID, err := chainhash.NewHashFromStr(resp.FundingTxId)
+	_, err = chainhash.NewHashFromStr(resp.FundingTxId)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &lnrpc.ChannelPoint{
-		FundingTxid: &lnrpc.ChannelPoint_FundingTxidBytes{FundingTxidBytes: txID[:]},
-		// Index unavailable for cln?
-	}, err
+	return nil
 }
 
 func (l *clightningConnection) ActiveChannels() (int, error) {

@@ -160,7 +160,7 @@ func run(_ *cli.Context) error {
 			nodeLog.Infow("Open channel", "peer", peer)
 
 			for _, channel := range channels {
-				_, err := client.OpenChannel(
+				err := client.OpenChannel(
 					peerKey, int64(channel.Capacity),
 					int64(channel.RemoteBalance),
 					channel.Private,
