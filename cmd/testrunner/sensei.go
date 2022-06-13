@@ -141,9 +141,6 @@ func (l *senseiConnection) OpenChannel(peerKey string, amtSat int64,
 				Public:             !private,
 				CounterpartyPubkey: peerKey,
 				PushAmountMsats:    &pushAmt,
-
-				// TODO:
-				// SpendUnconfirmed:   true,
 			},
 		},
 	})
@@ -183,9 +180,7 @@ func (l *senseiConnection) IsSynced(totalEdges, localChannels int) (bool, error)
 		return false, err
 	}
 
-	// TODO: Ideally we need the number of edges (channel ends) here for which
-	// we received a forwarding policy.
-	synced := resp.NumChannels*2 == uint64(totalEdges)-uint64(localChannels)*2
+	synced := resp.NumKnownEdgePolicies == uint64(totalEdges-localChannels)
 
 	return synced, nil
 }

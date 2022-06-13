@@ -115,7 +115,7 @@ func run() error {
 
 		case alias == "start" && target == "sensei":
 			serv = service{
-				Image:     "sensei-git",
+				Build:     "sensei",
 				DependsOn: []string{"bitcoind"},
 				Volumes: []string{
 					"lnd:/cfg",
