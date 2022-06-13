@@ -483,6 +483,8 @@ type NodeClient interface {
 	ListPeers(ctx context.Context, in *ListPeersRequest, opts ...grpc.CallOption) (*ListPeersResponse, error)
 	SignMessage(ctx context.Context, in *SignMessageRequest, opts ...grpc.CallOption) (*SignMessageResponse, error)
 	VerifyMessage(ctx context.Context, in *VerifyMessageRequest, opts ...grpc.CallOption) (*VerifyMessageResponse, error)
+	ListUnspent(ctx context.Context, in *ListUnspentRequest, opts ...grpc.CallOption) (*ListUnspentResponse, error)
+	NetworkGraphInfo(ctx context.Context, in *NetworkGraphInfoRequest, opts ...grpc.CallOption) (*NetworkGraphInfoResponse, error)
 }
 
 type nodeClient struct {
@@ -664,6 +666,24 @@ func (c *nodeClient) VerifyMessage(ctx context.Context, in *VerifyMessageRequest
 	return out, nil
 }
 
+func (c *nodeClient) ListUnspent(ctx context.Context, in *ListUnspentRequest, opts ...grpc.CallOption) (*ListUnspentResponse, error) {
+	out := new(ListUnspentResponse)
+	err := c.cc.Invoke(ctx, "/sensei.Node/ListUnspent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeClient) NetworkGraphInfo(ctx context.Context, in *NetworkGraphInfoRequest, opts ...grpc.CallOption) (*NetworkGraphInfoResponse, error) {
+	out := new(NetworkGraphInfoResponse)
+	err := c.cc.Invoke(ctx, "/sensei.Node/NetworkGraphInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NodeServer is the server API for Node service.
 // All implementations must embed UnimplementedNodeServer
 // for forward compatibility
@@ -687,6 +707,8 @@ type NodeServer interface {
 	ListPeers(context.Context, *ListPeersRequest) (*ListPeersResponse, error)
 	SignMessage(context.Context, *SignMessageRequest) (*SignMessageResponse, error)
 	VerifyMessage(context.Context, *VerifyMessageRequest) (*VerifyMessageResponse, error)
+	ListUnspent(context.Context, *ListUnspentRequest) (*ListUnspentResponse, error)
+	NetworkGraphInfo(context.Context, *NetworkGraphInfoRequest) (*NetworkGraphInfoResponse, error)
 	mustEmbedUnimplementedNodeServer()
 }
 
@@ -750,6 +772,12 @@ func (UnimplementedNodeServer) SignMessage(context.Context, *SignMessageRequest)
 }
 func (UnimplementedNodeServer) VerifyMessage(context.Context, *VerifyMessageRequest) (*VerifyMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyMessage not implemented")
+}
+func (UnimplementedNodeServer) ListUnspent(context.Context, *ListUnspentRequest) (*ListUnspentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUnspent not implemented")
+}
+func (UnimplementedNodeServer) NetworkGraphInfo(context.Context, *NetworkGraphInfoRequest) (*NetworkGraphInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NetworkGraphInfo not implemented")
 }
 func (UnimplementedNodeServer) mustEmbedUnimplementedNodeServer() {}
 
@@ -1106,6 +1134,42 @@ func _Node_VerifyMessage_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Node_ListUnspent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUnspentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServer).ListUnspent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sensei.Node/ListUnspent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServer).ListUnspent(ctx, req.(*ListUnspentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Node_NetworkGraphInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NetworkGraphInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServer).NetworkGraphInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sensei.Node/NetworkGraphInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServer).NetworkGraphInfo(ctx, req.(*NetworkGraphInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Node_ServiceDesc is the grpc.ServiceDesc for Node service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1188,6 +1252,14 @@ var Node_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyMessage",
 			Handler:    _Node_VerifyMessage_Handler,
+		},
+		{
+			MethodName: "ListUnspent",
+			Handler:    _Node_ListUnspent_Handler,
+		},
+		{
+			MethodName: "NetworkGraphInfo",
+			Handler:    _Node_NetworkGraphInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

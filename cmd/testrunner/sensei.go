@@ -132,16 +132,18 @@ func (l *senseiConnection) NewAddress() (string, error) {
 func (l *senseiConnection) OpenChannel(peerKey string, amtSat int64,
 	pushAmtSat int64, private bool) error {
 
+	var pushAmt uint64 = uint64(pushAmtSat)
+
 	_, err := l.client.OpenChannels(context.Background(), &sensei.OpenChannelsRequest{
-		Channels: []*sensei.OpenChannelInfo{
+		Requests: []*sensei.OpenChannelRequest{
 			{
-				AmtSatoshis: uint64(amtSat),
-				Public:      !private,
+				AmountSats:         uint64(amtSat),
+				Public:             !private,
+				CounterpartyPubkey: peerKey,
+				PushAmountMsats:    &pushAmt,
 
 				// TODO:
-				// NodePubkeyString:   peerKey,
 				// SpendUnconfirmed:   true,
-				// PushSat:            pushAmtSat,
 			},
 		},
 	})
@@ -165,14 +167,27 @@ func (l *senseiConnection) ActiveChannels() (int, error) {
 		return 0, err
 	}
 
-	// TODO: How to get numer of active channels?
-	return len(resp.Channels), nil
+	var active = 0
+	for _, ch := range resp.Channels {
+		if ch.IsUsable {
+			active++
+		}
+	}
+
+	return active, nil
 }
 
 func (l *senseiConnection) IsSynced(totalEdges, localChannels int) (bool, error) {
-	// TODO: How to get number of edges received through gossip + local edges?
+	resp, err := l.client.NetworkGraphInfo(context.Background(), &sensei.NetworkGraphInfoRequest{})
+	if err != nil {
+		return false, err
+	}
 
-	panic("not implemented")
+	// TODO: Ideally we need the number of edges (channel ends) here for which
+	// we received a forwarding policy.
+	synced := resp.NumChannels*2 == uint64(totalEdges)-uint64(localChannels)*2
+
+	return synced, nil
 }
 
 func (l *senseiConnection) AddInvoice(amtMsat int64) (string, error) {
@@ -181,7 +196,14 @@ func (l *senseiConnection) AddInvoice(amtMsat int64) (string, error) {
 }
 
 func (l *senseiConnection) SendPayment(invoice string, aliasMap map[string]string) error {
-	panic("not implemented")
+	_, err := l.client.PayInvoice(context.Background(), &sensei.PayInvoiceRequest{
+		Invoice: invoice,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (l *senseiConnection) HasFunds() error {
@@ -192,8 +214,7 @@ func (l *senseiConnection) HasFunds() error {
 			return err
 		}
 
-		// TODO: Is confirmed balance only?
-		if resp.BalanceSatoshis > 0 {
+		if resp.OnchainBalanceSats > 0 {
 			return nil
 		}
 
@@ -207,8 +228,13 @@ func (l *senseiConnection) Restart() (nodeInterface, error) {
 }
 
 func (l *senseiConnection) GetChannelBalance() (int, error) {
-	// TODO: Add up list channel responses?
-	panic("not implemented")
+	resp, err := l.client.GetBalance(context.Background(),
+		&sensei.GetBalanceRequest{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int(resp.ChannelBalanceMsats), nil
 }
 
 // MacaroonCredential wraps a macaroon to implement the
