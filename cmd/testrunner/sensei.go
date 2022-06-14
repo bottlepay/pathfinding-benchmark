@@ -132,7 +132,7 @@ func (l *senseiConnection) NewAddress() (string, error) {
 func (l *senseiConnection) OpenChannel(peerKey string, amtSat int64,
 	pushAmtSat int64, private bool) error {
 
-	var pushAmt uint64 = uint64(pushAmtSat)
+	var pushAmtMsats uint64 = uint64(pushAmtSat * 1000)
 
 	_, err := l.client.OpenChannels(context.Background(), &sensei.OpenChannelsRequest{
 		Requests: []*sensei.OpenChannelRequest{
@@ -140,7 +140,7 @@ func (l *senseiConnection) OpenChannel(peerKey string, amtSat int64,
 				AmountSats:         uint64(amtSat),
 				Public:             !private,
 				CounterpartyPubkey: peerKey,
-				PushAmountMsats:    &pushAmt,
+				PushAmountMsats:    &pushAmtMsats,
 			},
 		},
 	})
