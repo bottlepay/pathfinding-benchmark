@@ -180,7 +180,12 @@ func (l *senseiConnection) IsSynced(totalEdges, localChannels int) (bool, error)
 		return false, err
 	}
 
-	synced := resp.NumKnownEdgePolicies == uint64(totalEdges-localChannels)
+	log.Debugw("Syncing",
+		"edges", resp.NumKnownEdgePolicies,
+		"totalEdges", totalEdges,
+		"localChannels", localChannels)
+
+	synced := resp.NumKnownEdgePolicies == uint64(totalEdges)
 
 	return synced, nil
 }
@@ -229,7 +234,7 @@ func (l *senseiConnection) GetChannelBalance() (int, error) {
 		return 0, err
 	}
 
-	return int(resp.ChannelBalanceMsats), nil
+	return int(resp.ChannelBalanceMsats) / 1000, nil
 }
 
 // MacaroonCredential wraps a macaroon to implement the
