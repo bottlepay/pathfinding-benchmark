@@ -1,6 +1,12 @@
 # Define test payments in the format <destination node>: <amount>
 tests:
   - destination1: 25000
+  - destination2: 25000
+  - destination1: 25000
+  - destination2: 25000
+  - destination3: 80000
+  - shortcut_destination: 20000
+  - long_route_destination: 20000
 
 # Define a set of policies that are to be used in the channel definitions below.
 policies:
@@ -29,14 +35,364 @@ nodes:
   destination1:
     policy: normal
 
+  destination2:
+    policy: normal
+
+  destination3:
+    policy: normal
+
+  shortcut_destination:
+    policy: cheap
+
+  long_route_destination:
+    policy: cheap
+
   start:
     policy: normal
     channels:
       node0_0:
         - capacity: 150000
+      node0_1:
+        - capacity: 150000
+          remoteBalance: 140000
+      mpp0_0:
+        - capacity: 100000
+          remoteBalance: 50000
+      mpp0_1:
+        - capacity: 100000
+          remoteBalance: 50000
+      # shortcut scenario:
+      # The optimal solution is to split the payment into start-a-b-destination and start-x-y-destination.
+      # The route start-x-b-destination is better, but the channel b-destination does not have enough
+      # liquidity for the whole amount.
+      # Inspired by "Optimally Reliable & Cheap Payment Flows on the Lightning Network"
+      # https://arxiv.org/abs/2107.05322
+      #
+      #         shortcut_a - shortcut_b
+      #       /                 /      \
+      # start         ----------        shortcut_destination
+      #       \     /                  /
+      #        shortcut_x - shortcut_y
+      shortcut_a:
+        - capacity: 26000
+      shortcut_x:
+        - capacity: 26000
+          remoteBalance: 10000
+      # long route scenario:
+      # The only solution is using a very long route `start-a-b-c-d-e-f-g-destination` along large channels.
+      # The channels on the shorter routes `start-z-destination` and `start-z-y-destination` are smaller and
+      # do not have enough liquidity.
+      long_route_a:
+        - capacity: 10000000
+      long_route_z:
+        - capacity: 100000
 
   node0_0:
     policy: normal
     channels:
+      node1_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node1_1:
+        - capacity: 150000
+      black_hole:
+        - capacity: 150000
+      black_hole_indirect:
+        - capacity: 150000
+
+  node0_1:
+    policy: normal
+    channels:
+      node1_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node1_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  node1_0:
+    policy: normal
+    channels:
+      node2_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node2_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  node1_1:
+    policy: expensive
+    channels:
+      node2_0:
+        - capacity: 150000
+      node2_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  node2_0:
+    policy: expensive
+    channels:
+      node3_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node3_1:
+        - capacity: 150000
+  node2_1:
+    policy: normal
+    channels:
+      node3_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node3_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  node3_0:
+    policy: normal
+    channels:
+      node4_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node4_1:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  node3_1:
+    policy: expensive
+    channels:
+      node4_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      node4_1:
+        - capacity: 150000
+      destination2:
+        - capacity: 150000
+
+  node4_0:
+    policy: normal
+    channels:
       destination1:
         - capacity: 150000
+  node4_1:
+    policy: expensive
+    channels:
+      destination1:
+        - capacity: 150000
+
+  black_hole:
+    policy: cheap
+    channels:
+      no_liquidity_0:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_1:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_2:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_3:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_4:
+        - capacity: 150000
+          remoteBalance: 140000
+      no_liquidity_5:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  black_hole_indirect:
+    policy: normal
+    channels:
+      no_liquidity_0:
+        - capacity: 150000
+      no_liquidity_1:
+        - capacity: 150000
+      no_liquidity_2:
+        - capacity: 150000
+      no_liquidity_3:
+        - capacity: 150000
+      no_liquidity_4:
+        - capacity: 150000
+      no_liquidity_5:
+        - capacity: 150000
+
+  no_liquidity_0:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  no_liquidity_1:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  no_liquidity_2:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  no_liquidity_3:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  no_liquidity_4:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  no_liquidity_5:
+    policy: cheap
+    channels:
+      destination1:
+        - capacity: 150000
+          remoteBalance: 140000
+      destination2:
+        - capacity: 150000
+          remoteBalance: 140000
+
+  mpp0_0:
+    policy: normal
+    channels:
+      mpp1_0:
+        - capacity: 100000
+          remoteBalance: 70000
+      mpp1_1:
+        - capacity: 100000
+          remoteBalance: 70000
+
+  mpp0_1:
+    policy: normal
+    channels:
+      mpp1_0:
+        - capacity: 100000
+          remoteBalance: 70000
+      mpp1_1:
+        - capacity: 100000
+          remoteBalance: 70000
+
+  mpp1_0:
+    policy: normal
+    channels:
+      destination3:
+        - capacity: 500000
+          remoteBalance: 50000
+
+  mpp1_1:
+    policy: normal
+    channels:
+      destination3:
+        - capacity: 500000
+          remoteBalance: 50000
+
+  shortcut_a:
+    policy: cheap
+    channels:
+      shortcut_b:
+        - capacity: 25000
+
+  shortcut_b:
+    policy: cheap
+    channels:
+      shortcut_destination:
+        - capacity: 45000
+          remoteBalance: 30000
+
+  shortcut_x:
+    policy: cheap
+    channels:
+      shortcut_y:
+        - capacity: 70000
+      shortcut_b:
+        - capacity: 90000
+
+  shortcut_y:
+    policy: cheap
+    channels:
+      shortcut_destination:
+        - capacity: 45000
+          remoteBalance: 30000
+
+  long_route_a:
+    policy: cheap
+    channels:
+      long_route_b:
+        - capacity: 10000000
+
+  long_route_b:
+    policy: cheap
+    channels:
+      long_route_c:
+        - capacity: 10000000
+
+  long_route_c:
+    policy: cheap
+    channels:
+      long_route_d:
+        - capacity: 10000000
+
+  long_route_d:
+    policy: cheap
+    channels:
+      long_route_e:
+        - capacity: 10000000
+
+  long_route_e:
+    policy: cheap
+    channels:
+      long_route_f:
+        - capacity: 10000000
+
+  long_route_f:
+    policy: cheap
+    channels:
+      long_route_g:
+        - capacity: 10000000
+
+  long_route_g:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 10000000
+
+  long_route_z:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 50000
+          remoteBalance: 40000
+      long_route_y:
+        - capacity: 50000
+
+  long_route_y:
+    policy: cheap
+    channels:
+      long_route_destination:
+        - capacity: 50000
+          remoteBalance: 40000
