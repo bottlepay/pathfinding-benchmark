@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 const lndManageJHost = "lnd-managej"
@@ -32,7 +33,7 @@ func getLndManageJConnection(alias string) (nodeInterface, error) {
 func (l *lndManageJConnection) resetCache() error {
 	resp, err := http.Get(
 		fmt.Sprintf(
-			"http://%v:8081/beta/pickhardt-payments/reset-graph-cache",
+			"http://%v:8081/api/payments/reset-graph-cache",
 			lndManageJHost,
 		),
 	)
@@ -124,12 +125,9 @@ func (l *lndManageJConnection) IsSynced(totalEdges, localChannels int) (bool, er
 }
 
 func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]string) error {
-	resp, err := http.Get(
-		fmt.Sprintf(
-			"http://%v:8081/beta/pickhardt-payments/pay-payment-request/%v/fee-rate-weight/1",
-			lndManageJHost, invoice,
-		),
-	)
+	requestBodyReader := strings.NewReader("{\"feeRateWeight\": 1}")
+	url := fmt.Sprintf("http://%v:8081/api/payments/pay-payment-request/%v", lndManageJHost, invoice)
+	resp, err := http.Post(url, "application/json", requestBodyReader)
 	if err != nil {
 		return err
 	}
@@ -139,12 +137,12 @@ func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]s
 		return errors.New("payment error")
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(string(body))
+	fmt.Println(string(responseBody))
 
 	return nil
 }
