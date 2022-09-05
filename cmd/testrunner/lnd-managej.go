@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
+	"time"
 )
 
 const lndManageJHost = "lnd-managej"
@@ -32,7 +35,7 @@ func getLndManageJConnection(alias string) (nodeInterface, error) {
 func (l *lndManageJConnection) resetCache() error {
 	resp, err := http.Get(
 		fmt.Sprintf(
-			"http://%v:8081/beta/pickhardt-payments/reset-graph-cache",
+			"http://%v:8081/api/payments/reset-graph-cache",
 			lndManageJHost,
 		),
 	)
@@ -123,13 +126,15 @@ func (l *lndManageJConnection) IsSynced(totalEdges, localChannels int) (bool, er
 	return true, nil
 }
 
+type TimestampAndMessage struct {
+	Timestamp string
+	Message   string
+}
+
 func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]string) error {
-	resp, err := http.Get(
-		fmt.Sprintf(
-			"http://%v:8081/beta/pickhardt-payments/pay-payment-request/%v/fee-rate-weight/1",
-			lndManageJHost, invoice,
-		),
-	)
+	requestBodyReader := strings.NewReader("{\"feeRateWeight\": 1}")
+	url := fmt.Sprintf("http://%v:8081/api/payments/pay-payment-request/%v", lndManageJHost, invoice)
+	resp, err := http.Post(url, "application/json", requestBodyReader)
 	if err != nil {
 		return err
 	}
@@ -139,12 +144,18 @@ func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]s
 		return errors.New("payment error")
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		var timestampAndMessage TimestampAndMessage
+		line := scanner.Text()
+		_ = json.Unmarshal([]byte(line), &timestampAndMessage)
+		timestamp, _ := time.Parse(time.RFC3339Nano, timestampAndMessage.Timestamp)
+		formattedTimestamp := timestamp.Format("2006-01-02T15:04:05.000Z07")
+		fmt.Printf("%v: %v\n", formattedTimestamp, timestampAndMessage.Message)
+	}
+	if err := scanner.Err(); err != nil {
 		return err
 	}
-
-	fmt.Println(string(body))
 
 	return nil
 }
