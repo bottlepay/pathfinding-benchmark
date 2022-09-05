@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -137,12 +138,13 @@ func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]s
 		return errors.New("payment error")
 	}
 
-	responseBody, err := io.ReadAll(resp.Body)
-	if err != nil {
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
 		return err
 	}
-
-	fmt.Println(string(responseBody))
 
 	return nil
 }
