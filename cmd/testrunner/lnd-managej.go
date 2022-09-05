@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 const lndManageJHost = "lnd-managej"
@@ -125,6 +126,11 @@ func (l *lndManageJConnection) IsSynced(totalEdges, localChannels int) (bool, er
 	return true, nil
 }
 
+type TimestampAndMessage struct {
+	Timestamp string
+	Message   string
+}
+
 func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]string) error {
 	requestBodyReader := strings.NewReader("{\"feeRateWeight\": 1}")
 	url := fmt.Sprintf("http://%v:8081/api/payments/pay-payment-request/%v", lndManageJHost, invoice)
@@ -140,7 +146,12 @@ func (l *lndManageJConnection) SendPayment(invoice string, aliasMap map[string]s
 
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		var timestampAndMessage TimestampAndMessage
+		line := scanner.Text()
+		_ = json.Unmarshal([]byte(line), &timestampAndMessage)
+		timestamp, _ := time.Parse(time.RFC3339Nano, timestampAndMessage.Timestamp)
+		formattedTimestamp := timestamp.Format("2006-01-02T15:04:05.000Z07")
+		fmt.Printf("%v: %v\n", formattedTimestamp, timestampAndMessage.Message)
 	}
 	if err := scanner.Err(); err != nil {
 		return err
